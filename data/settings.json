@@ -1,0 +1,199 @@
+{
+  "restaurant": {
+    "name": "Nhà Hàng Việt Nam",
+    "address": "123 Đường Lê Lợi, Quận 1, TP.HCM",
+    "phone": "028.3829.1234",
+    "email": "info@nhahangvietnam.com",
+    "website": "https://nhahangvietnam.com",
+    "taxCode": "0123456789",
+    "logo": "/images/restaurant-logo.png",
+    "description": "Nhà hàng phục vụ món ăn Việt Nam truyền thống"
+  },
+  "business": {
+    "openTime": "06:00",
+    "closeTime": "23:00",
+    "timezone": "Asia/Ho_Chi_Minh",
+    "currency": "VND",
+    "currencySymbol": "đ",
+    "language": "vi",
+    "dateFormat": "dd/MM/yyyy",
+    "timeFormat": "HH:mm",
+    "weekStartsOn": 1
+  },
+  "tax": {
+    "defaultTaxRate": 10,
+    "vatNumber": "VN0123456789",
+    "includeTaxInPrice": false,
+    "taxRounding": "round",
+    "serviceCharge": 0,
+    "serviceChargeType": "percentage"
+  },
+  "receipt": {
+    "header": "NHÀ HÀNG VIỆT NAM\n123 Đường Lê Lợi, Quận 1, TP.HCM\nĐT: 028.3829.1234",
+    "footer": "Cảm ơn quý khách đã sử dụng dịch vụ!\nHẹn gặp lại quý khách!",
+    "showTaxBreakdown": true,
+    "showServiceCharge": false,
+    "showQRCode": true,
+    "qrCodeType": "payment",
+    "printCopies": 2,
+    "paperSize": "80mm",
+    "autoprint": false
+  },
+  "payment": {
+    "methods": [
+      {
+        "id": "cash",
+        "name": "Tiền mặt",
+        "icon": "💵",
+        "isEnabled": true,
+        "requiresChange": true
+      },
+      {
+        "id": "card",
+        "name": "Thẻ",
+        "icon": "💳",
+        "isEnabled": true,
+        "requiresChange": false
+      },
+      {
+        "id": "bank-transfer",
+        "name": "Chuyển khoản",
+        "icon": "🏦",
+        "isEnabled": true,
+        "requiresChange": false,
+        "accountNumber": "1234567890",
+        "bankName": "Vietcombank",
+        "accountName": "Nhà Hàng Việt Nam"
+      },
+      {
+        "id": "momo",
+        "name": "MoMo",
+        "icon": "📱",
+        "isEnabled": true,
+        "requiresChange": false,
+        "qrCode": "momo://pay/0123456789"
+      },
+      {
+        "id": "zalopay",
+        "name": "ZaloPay",
+        "icon": "💙",
+        "isEnabled": true,
+        "requiresChange": false,
+        "qrCode": "zalopay://pay/0123456789"
+      }
+    ],
+    "defaultMethod": "cash",
+    "allowMultiplePayments": true,
+    "requireCustomerInfo": false
+  },
+  "pos": {
+    "autoSaveInterval": 30,
+    "defaultQuantity": 1,
+    "maxQuantityPerItem": 99,
+    "allowNegativeInventory": false,
+    "showProductImages": true,
+    "showProductDescription": true,
+    "showPreparationTime": true,
+    "defaultView": "grid",
+    "itemsPerPage": 20,
+    "enableBarcode": true,
+    "enableVoiceCommands": false,
+    "soundEffects": true
+  },
+  "inventory": {
+    "lowStockThreshold": 10,
+    "trackExpiration": true,
+    "alertBeforeExpiration": 7,
+    "autoDeductOnSale": true,
+    "costMethod": "FIFO",
+    "enableBatches": false,
+    "requireStockCheck": false
+  },
+  "orders": {
+    "orderNumberPrefix": "ORD",
+    "orderNumberLength": 6,
+    "autoGenerateOrderNumber": true,
+    "defaultOrderStatus": "pending",
+    "allowOrderModification": true,
+    "enableOrderNotes": true,
+    "maxOrderItems": 50,
+    "orderTimeout": 120,
+    "enableTableService": true
+  },
+  "customers": {
+    "enableLoyalty": true,
+    "loyaltyPointsRatio": 1000,
+    "loyaltyRedemptionRate": 10,
+    "requirePhoneNumber": false,
+    "enableBirthday": true,
+    "enableAddresses": true,
+    "enableNotes": true,
+    "autoCreateCustomer": false
+  },
+  "notifications": {
+    "enableEmailNotifications": true,
+    "enableSMSNotifications": false,
+    "enablePushNotifications": true,
+    "lowStockAlert": true,
+    "orderCompleteAlert": true,
+    "paymentReceivedAlert": true,
+    "customerBirthdayAlert": true,
+    "dailyReportEmail": true,
+    "weeklyReportEmail": true
+  },
+  "security": {
+    "requirePinForVoid": true,
+    "requirePinForDiscount": true,
+    "requirePinForRefund": true,
+    "sessionTimeout": 480,
+    "maxLoginAttempts": 5,
+    "passwordMinLength": 8,
+    "enableTwoFactor": false,
+    "auditLog": true
+  },
+  "backup": {
+    "autoBackup": true,
+    "backupInterval": "daily",
+    "backupTime": "02:00",
+    "retentionDays": 30,
+    "cloudBackup": false,
+    "localBackupPath": "/backups"
+  },
+  "integration": {
+    "enableAPI": true,
+    "apiVersion": "v1",
+    "webhookURL": "",
+    "enableWebhooks": false,
+    "syncInterval": 300,
+    "enableThirdPartyIntegrations": false
+  },
+  "display": {
+    "theme": "light",
+    "primaryColor": "#2563eb",
+    "secondaryColor": "#64748b",
+    "accentColor": "#059669",
+    "fontSize": "medium",
+    "enableAnimations": true,
+    "showWelcomeScreen": true,
+    "customCSS": ""
+  },
+  "kitchen": {
+    "enableKitchenDisplay": false,
+    "printToKitchen": true,
+    "kitchenPrinter": "kitchen-printer-1",
+    "groupOrdersByTable": true,
+    "showPreparationTime": true,
+    "enableOrderTracking": false,
+    "autoMarkReady": false
+  },
+  "reporting": {
+    "defaultDateRange": "today",
+    "enableRealTimeReports": true,
+    "autoGenerateDaily": true,
+    "autoGenerateWeekly": true,
+    "autoGenerateMonthly": true,
+    "emailReports": false,
+    "reportEmail": "manager@nhahangvietnam.com",
+    "includeTaxInReports": true
+  }
+}

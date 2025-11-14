@@ -12,13 +12,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { useToast } from "@/hooks/use-toast";
 import { useTables } from "@/hooks/use-tables";
 import { ArrowLeft, Users, Clock } from "lucide-react";
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  category: string;
-}
+import { Product, formatCurrency, formatTime } from "@/lib/data";
 
 export default function POSPage() {
   const {
@@ -69,7 +63,7 @@ export default function POSPage() {
     completeOrder(selectedTable.id);
     toast({
       title: "Thanh toán thành công",
-      description: `${selectedTable.name} - ${selectedOrder.total.toLocaleString("vi-VN")}đ`,
+      description: `${selectedTable.name} - ${formatCurrency(selectedOrder.total)}`,
     });
     clearSelection();
   };
@@ -113,11 +107,7 @@ export default function POSPage() {
                     <div className="flex items-center gap-1">
                       <Clock className="h-4 w-4" />
                       <span>
-                        Bắt đầu:{" "}
-                        {selectedOrder.startTime.toLocaleTimeString("vi-VN", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                        Bắt đầu: {formatTime(selectedOrder.startTime)}
                       </span>
                     </div>
                   )}

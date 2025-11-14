@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Table } from "@/components/pos/table-grid";
+import { Table, getTablesData, calculateTax, calculateTotal } from "@/lib/data";
 
 export interface OrderItem {
   id: string;
@@ -21,87 +21,27 @@ export interface TableOrder {
   total: number;
 }
 
-// Sample data for restaurant tables
-const initialTables: Table[] = [
-  {
-    id: "table-1",
-    name: "Bàn 1",
-    capacity: 2,
-    status: "available",
-  },
-  {
-    id: "table-2",
-    name: "Bàn 2",
-    capacity: 4,
-    status: "occupied",
-    currentOrder: {
-      id: "order-1",
-      startTime: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
-      totalAmount: 250000,
-      itemCount: 3,
-    },
-  },
-  {
-    id: "table-3",
-    name: "Bàn 3",
-    capacity: 2,
-    status: "available",
-  },
-  {
-    id: "table-4",
-    name: "Bàn 4",
-    capacity: 6,
-    status: "reserved",
-  },
-  {
-    id: "table-5",
-    name: "Bàn 5",
-    capacity: 4,
-    status: "occupied",
-    currentOrder: {
-      id: "order-2",
-      startTime: new Date(Date.now() - 45 * 60 * 1000), // 45 minutes ago
-      totalAmount: 180000,
-      itemCount: 2,
-    },
-  },
-  {
-    id: "table-6",
-    name: "Bàn 6",
-    capacity: 2,
-    status: "cleaning",
-  },
-  {
-    id: "table-7",
-    name: "Bàn 7",
-    capacity: 4,
-    status: "available",
-  },
-  {
-    id: "table-8",
-    name: "Bàn 8",
-    capacity: 8,
-    status: "available",
-  },
-  {
-    id: "table-9",
-    name: "Bàn 9",
-    capacity: 2,
-    status: "occupied",
-    currentOrder: {
-      id: "order-3",
-      startTime: new Date(Date.now() - 15 * 60 * 1000), // 15 minutes ago
-      totalAmount: 320000,
-      itemCount: 5,
-    },
-  },
-  {
-    id: "table-10",
-    name: "Bàn 10",
-    capacity: 6,
-    status: "available",
-  },
-];
+// Convert JSON data to runtime data with proper Date objects
+const convertTableData = (jsonTables: any[]): Table[] => {
+  return jsonTables.map((table) => ({
+    ...table,
+    currentOrder: table.currentOrder
+      ? {
+          ...table.currentOrder,
+          startTime: new Date(table.currentOrder.startTime),
+        }
+      : undefined,
+    reservation: table.reservation
+      ? {
+          ...table.reservation,
+          time: new Date(table.reservation.time),
+        }
+      : undefined,
+  }));
+};
+
+const { tables: jsonTables } = getTablesData();
+const initialTables = convertTableData(jsonTables);
 
 export function useTables() {
   const [tables, setTables] = useState<Table[]>(initialTables);
@@ -174,8 +114,8 @@ export function useTables() {
           startTime: new Date(),
           status: "active",
           subtotal: item.price * item.quantity,
-          tax: item.price * item.quantity * 0.1, // 10% tax
-          total: item.price * item.quantity * 1.1,
+          tax: calculateTax(item.price * item.quantity),
+          total: calculateTotal(item.price * item.quantity),
         };
         newOrders.set(tableId, newOrder);
       } else {
@@ -200,8 +140,8 @@ export function useTables() {
           (sum, i) => sum + i.price * i.quantity,
           0,
         );
-        const tax = subtotal * 0.1;
-        const total = subtotal + tax;
+        const tax = calculateTax(subtotal);
+        const total = calculateTotal(subtotal);
 
         const updatedOrder: TableOrder = {
           ...order,
@@ -243,8 +183,8 @@ export function useTables() {
         (sum, item) => sum + item.price * item.quantity,
         0,
       );
-      const tax = subtotal * 0.1;
-      const total = subtotal + tax;
+      const tax = calculateTax(subtotal);
+      const total = calculateTotal(subtotal);
 
       const updatedOrder: TableOrder = {
         ...order,

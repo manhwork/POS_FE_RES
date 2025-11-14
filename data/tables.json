@@ -1,0 +1,230 @@
+{
+  "tables": [
+    {
+      "id": "table-1",
+      "name": "Bàn 1",
+      "capacity": 2,
+      "status": "available",
+      "position": {
+        "x": 1,
+        "y": 1
+      },
+      "zone": "indoor",
+      "description": "Bàn 2 người gần cửa sổ"
+    },
+    {
+      "id": "table-2",
+      "name": "Bàn 2",
+      "capacity": 4,
+      "status": "occupied",
+      "position": {
+        "x": 2,
+        "y": 1
+      },
+      "zone": "indoor",
+      "description": "Bàn 4 người trung tâm",
+      "currentOrder": {
+        "id": "order-1",
+        "startTime": "2024-11-15T09:30:00.000Z",
+        "totalAmount": 250000,
+        "itemCount": 3
+      }
+    },
+    {
+      "id": "table-3",
+      "name": "Bàn 3",
+      "capacity": 2,
+      "status": "available",
+      "position": {
+        "x": 3,
+        "y": 1
+      },
+      "zone": "indoor",
+      "description": "Bàn 2 người gần bar"
+    },
+    {
+      "id": "table-4",
+      "name": "Bàn 4",
+      "capacity": 6,
+      "status": "reserved",
+      "position": {
+        "x": 1,
+        "y": 2
+      },
+      "zone": "indoor",
+      "description": "Bàn 6 người gia đình",
+      "reservation": {
+        "customerName": "Nguyễn Văn A",
+        "phone": "0901234567",
+        "time": "2024-11-15T12:00:00.000Z",
+        "note": "Sinh nhật"
+      }
+    },
+    {
+      "id": "table-5",
+      "name": "Bàn 5",
+      "capacity": 4,
+      "status": "occupied",
+      "position": {
+        "x": 2,
+        "y": 2
+      },
+      "zone": "indoor",
+      "description": "Bàn 4 người VIP",
+      "currentOrder": {
+        "id": "order-2",
+        "startTime": "2024-11-15T09:15:00.000Z",
+        "totalAmount": 180000,
+        "itemCount": 2
+      }
+    },
+    {
+      "id": "table-6",
+      "name": "Bàn 6",
+      "capacity": 2,
+      "status": "cleaning",
+      "position": {
+        "x": 3,
+        "y": 2
+      },
+      "zone": "indoor",
+      "description": "Bàn 2 người góc"
+    },
+    {
+      "id": "table-7",
+      "name": "Bàn 7",
+      "capacity": 4,
+      "status": "available",
+      "position": {
+        "x": 1,
+        "y": 3
+      },
+      "zone": "outdoor",
+      "description": "Bàn 4 người sân thượng"
+    },
+    {
+      "id": "table-8",
+      "name": "Bàn 8",
+      "capacity": 8,
+      "status": "available",
+      "position": {
+        "x": 2,
+        "y": 3
+      },
+      "zone": "outdoor",
+      "description": "Bàn 8 người tổ chức sự kiện"
+    },
+    {
+      "id": "table-9",
+      "name": "Bàn 9",
+      "capacity": 2,
+      "status": "occupied",
+      "position": {
+        "x": 3,
+        "y": 3
+      },
+      "zone": "outdoor",
+      "description": "Bàn 2 người ban công",
+      "currentOrder": {
+        "id": "order-3",
+        "startTime": "2024-11-15T09:45:00.000Z",
+        "totalAmount": 320000,
+        "itemCount": 5
+      }
+    },
+    {
+      "id": "table-10",
+      "name": "Bàn 10",
+      "capacity": 6,
+      "status": "available",
+      "position": {
+        "x": 1,
+        "y": 4
+      },
+      "zone": "private",
+      "description": "Phòng riêng 6 người"
+    },
+    {
+      "id": "table-11",
+      "name": "Bàn 11",
+      "capacity": 4,
+      "status": "available",
+      "position": {
+        "x": 2,
+        "y": 4
+      },
+      "zone": "private",
+      "description": "Phòng riêng 4 người"
+    },
+    {
+      "id": "table-12",
+      "name": "Bàn 12",
+      "capacity": 10,
+      "status": "reserved",
+      "position": {
+        "x": 3,
+        "y": 4
+      },
+      "zone": "private",
+      "description": "Phòng VIP 10 người",
+      "reservation": {
+        "customerName": "Công ty ABC",
+        "phone": "0987654321",
+        "time": "2024-11-15T18:00:00.000Z",
+        "note": "Họp mặt cuối năm"
+      }
+    }
+  ],
+  "zones": [
+    {
+      "id": "indoor",
+      "name": "Khu vực trong nhà",
+      "description": "Khu vực chính trong nhà có điều hòa",
+      "color": "#e3f2fd"
+    },
+    {
+      "id": "outdoor",
+      "name": "Khu vực ngoài trời",
+      "description": "Sân thượng và ban công",
+      "color": "#f3e5f5"
+    },
+    {
+      "id": "private",
+      "name": "Phòng riêng",
+      "description": "Các phòng riêng VIP",
+      "color": "#fff3e0"
+    }
+  ],
+  "tableStatuses": [
+    {
+      "value": "available",
+      "label": "Trống",
+      "color": "green",
+      "description": "Bàn sẵn sàng phục vụ"
+    },
+    {
+      "value": "occupied",
+      "label": "Đang phục vụ",
+      "color": "red",
+      "description": "Bàn có khách đang sử dụng"
+    },
+    {
+      "value": "reserved",
+      "label": "Đã đặt",
+      "color": "yellow",
+      "description": "Bàn đã được đặt trước"
+    },
+    {
+      "value": "cleaning",
+      "label": "Dọn dẹp",
+      "color": "gray",
+      "description": "Bàn đang được dọn dẹp"
+    },
+    {
+      "value": "maintenance",
+      "label": "Bảo trì",
+      "color": "orange",
+      "description": "Bàn đang bảo trì"
+    }
+  ]
+}

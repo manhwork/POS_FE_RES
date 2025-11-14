@@ -1,82 +1,211 @@
 "use client";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  category: string;
-  image?: string;
-}
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Clock, Flame } from "lucide-react";
+import {
+  Product,
+  Category,
+  getMenuData,
+  getAvailableProducts,
+  getProductsByCategory,
+  formatCurrency,
+  getCategoryById,
+} from "@/lib/data";
 
 interface ProductGridProps {
   products?: Product[];
   onProductSelect: (product: Product) => void;
+  selectedCategory?: string;
 }
 
-const sampleProducts: Product[] = [
-  // Món chính
-  { id: "1", name: "Phở Bò", price: 65000, category: "Món chính" },
-  { id: "2", name: "Bún Bò Huế", price: 60000, category: "Món chính" },
-  { id: "3", name: "Cơm Tấm", price: 55000, category: "Món chính" },
-  { id: "4", name: "Bánh Mì", price: 25000, category: "Món chính" },
-  { id: "5", name: "Mì Quảng", price: 70000, category: "Món chính" },
-  { id: "6", name: "Cơm Gà", price: 85000, category: "Món chính" },
-
-  // Đồ uống
-  { id: "7", name: "Cà Phê Đen", price: 20000, category: "Đồ uống" },
-  { id: "8", name: "Cà Phê Sữa", price: 25000, category: "Đồ uống" },
-  { id: "9", name: "Trà Đá", price: 10000, category: "Đồ uống" },
-  { id: "10", name: "Nước Dừa", price: 30000, category: "Đồ uống" },
-  { id: "11", name: "Sinh Tố Bơ", price: 35000, category: "Đồ uống" },
-  { id: "12", name: "Bia Saigon", price: 25000, category: "Đồ uống" },
-
-  // Món phụ
-  { id: "13", name: "Nem Rán", price: 40000, category: "Món phụ" },
-  { id: "14", name: "Gỏi Cuốn", price: 35000, category: "Món phụ" },
-  { id: "15", name: "Chả Cá", price: 80000, category: "Món phụ" },
-  { id: "16", name: "Bánh Xèo", price: 50000, category: "Món phụ" },
-
-  // Tráng miệng
-  { id: "17", name: "Chè Ba Màu", price: 20000, category: "Tráng miệng" },
-  { id: "18", name: "Bánh Flan", price: 25000, category: "Tráng miệng" },
-  { id: "19", name: "Kem Dừa", price: 30000, category: "Tráng miệng" },
-  { id: "20", name: "Trái Cây", price: 35000, category: "Tráng miệng" },
-];
-
 export function ProductGrid({
-  products = sampleProducts,
+  products: customProducts,
   onProductSelect,
+  selectedCategory,
 }: ProductGridProps) {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [activeCategory, setActiveCategory] = useState<string | null>(
+    selectedCategory || null,
+  );
+
+  useEffect(() => {
+    const { categories: menuCategories, products: menuProducts } =
+      getMenuData();
+    const availableProducts = getAvailableProducts();
+
+    setCategories(menuCategories.sort((a, b) => a.order - b.order));
+    setAllProducts(menuProducts);
+    setFilteredProducts(customProducts || availableProducts);
+  }, [customProducts]);
+
+  useEffect(() => {
+    if (activeCategory) {
+      const categoryProducts = getProductsByCategory(activeCategory);
+      setFilteredProducts(categoryProducts.filter((p) => p.isAvailable));
+    } else {
+      setFilteredProducts(customProducts || getAvailableProducts());
+    }
+  }, [activeCategory, customProducts]);
+
+  const handleCategorySelect = (categoryId: string) => {
+    setActiveCategory(activeCategory === categoryId ? null : categoryId);
+  };
+
+  const getCategoryIcon = (categoryId: string) => {
+    const category = getCategoryById(categoryId);
+    return category?.icon || "🍽️";
+  };
+
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-      {products.map((product) => (
-        <Card
-          key={product.id}
-          className="cursor-pointer hover:shadow-md transition-shadow"
-          onClick={() => onProductSelect(product)}
-        >
-          <CardContent className="p-4">
-            <div className="aspect-square bg-muted rounded-lg mb-3 flex items-center justify-center">
-              <span className="text-2xl">
-                {product.category === "Đồ uống"
-                  ? "🥤"
-                  : product.category === "Món chính"
-                    ? "🍜"
-                    : product.category === "Món phụ"
-                      ? "🥗"
-                      : product.category === "Tráng miệng"
-                        ? "🍰"
-                        : "🍽️"}
-              </span>
-            </div>
-            <h3 className="font-semibold text-sm mb-1">{product.name}</h3>
-            <p className="text-lg font-bold text-primary">
-              {product.price.toLocaleString("vi-VN")}đ
+    <div className="flex flex-col h-full">
+      {/* Category Filter */}
+      {!customProducts && (
+        <div className="p-4 border-b bg-muted/50">
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant={activeCategory === null ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActiveCategory(null)}
+              className="text-xs"
+            >
+              Tất cả
+            </Button>
+            {categories.map((category) => (
+              <Button
+                key={category.id}
+                variant={activeCategory === category.id ? "default" : "outline"}
+                size="sm"
+                onClick={() => handleCategorySelect(category.id)}
+                className="text-xs"
+              >
+                <span className="mr-1">{category.icon}</span>
+                {category.name}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Products Grid */}
+      <div className="flex-1 overflow-auto">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+          {filteredProducts.map((product) => (
+            <Card
+              key={product.id}
+              className="cursor-pointer hover:shadow-md transition-all duration-200 hover:scale-[1.02]"
+              onClick={() => onProductSelect(product)}
+            >
+              <CardContent className="p-3">
+                {/* Product Image/Icon */}
+                <div className="aspect-square bg-muted rounded-lg mb-3 flex items-center justify-center relative overflow-hidden">
+                  {product.image &&
+                  product.image !== `/images/${product.id}.jpg` ? (
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-3xl">
+                      {getCategoryIcon(product.categoryId)}
+                    </span>
+                  )}
+
+                  {/* Badges */}
+                  <div className="absolute top-1 left-1 flex gap-1">
+                    {product.isSpicy && (
+                      <Badge variant="destructive" className="text-xs p-1">
+                        <Flame className="w-3 h-3" />
+                      </Badge>
+                    )}
+                    {product.isAlcoholic && (
+                      <Badge variant="secondary" className="text-xs p-1">
+                        🍺
+                      </Badge>
+                    )}
+                  </div>
+
+                  {!product.isAvailable && (
+                    <div className="absolute inset-0 bg-gray-500/50 flex items-center justify-center">
+                      <Badge variant="secondary">Hết món</Badge>
+                    </div>
+                  )}
+                </div>
+
+                {/* Product Info */}
+                <div className="space-y-1">
+                  <h3 className="font-semibold text-sm line-clamp-2 min-h-[2.5rem]">
+                    {product.name}
+                  </h3>
+
+                  {product.description && (
+                    <p className="text-xs text-muted-foreground line-clamp-2">
+                      {product.description}
+                    </p>
+                  )}
+
+                  <div className="flex items-center justify-between">
+                    <p className="text-lg font-bold text-primary">
+                      {formatCurrency(product.price)}
+                    </p>
+
+                    {product.preparationTime > 0 && (
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Clock className="w-3 h-3" />
+                        <span>{product.preparationTime}p</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Allergen Warning */}
+                  {product.allergens.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {product.allergens.slice(0, 2).map((allergen) => (
+                        <Badge
+                          key={allergen}
+                          variant="outline"
+                          className="text-xs"
+                        >
+                          {allergen}
+                        </Badge>
+                      ))}
+                      {product.allergens.length > 2 && (
+                        <Badge variant="outline" className="text-xs">
+                          +{product.allergens.length - 2}
+                        </Badge>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Serving Size for Hot Pot */}
+                  {product.servingSize && (
+                    <Badge variant="secondary" className="text-xs mt-1">
+                      {product.servingSize}
+                    </Badge>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* No Products Message */}
+        {filteredProducts.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+            <span className="text-4xl mb-2">🍽️</span>
+            <p className="text-lg font-medium">Không có món ăn</p>
+            <p className="text-sm">
+              {activeCategory
+                ? "Danh mục này hiện tại không có món nào"
+                : "Hiện tại không có món ăn nào"}
             </p>
-          </CardContent>
-        </Card>
-      ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

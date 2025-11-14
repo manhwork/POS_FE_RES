@@ -6,6 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/language-context";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { CheckoutModal } from "./checkout-modal";
+import {
+  formatCurrency,
+  calculateTax,
+  calculateServiceCharge,
+  calculateTotal,
+} from "@/lib/data";
 
 export interface CartItem {
   id: string;
@@ -34,8 +40,9 @@ export function Cart({
     (sum, item) => sum + item.price * item.quantity,
     0,
   );
-  const tax = subtotal * 0.1; // 10% tax
-  const total = subtotal + tax;
+  const tax = calculateTax(subtotal);
+  const serviceCharge = calculateServiceCharge(subtotal);
+  const total = calculateTotal(subtotal);
 
   const handleCheckout = () => {
     setShowCheckoutModal(true);
@@ -65,7 +72,7 @@ export function Cart({
                   <div className="flex-1">
                     <h4 className="font-medium">{item.name}</h4>
                     <p className="text-sm text-muted-foreground">
-                      {item.price.toLocaleString("vi-VN")}đ mỗi món
+                      {formatCurrency(item.price)} mỗi món
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -110,22 +117,28 @@ export function Cart({
             <div className="space-y-2 pt-4 border-t">
               <div className="flex justify-between">
                 <span>Tạm tính:</span>
-                <span>{subtotal.toLocaleString("vi-VN")}đ</span>
+                <span>{formatCurrency(subtotal)}</span>
               </div>
               <div className="flex justify-between">
-                <span>Thuế (10%):</span>
-                <span>{tax.toLocaleString("vi-VN")}đ</span>
+                <span>Thuế:</span>
+                <span>{formatCurrency(tax)}</span>
               </div>
+              {serviceCharge > 0 && (
+                <div className="flex justify-between">
+                  <span>Phí phục vụ:</span>
+                  <span>{formatCurrency(serviceCharge)}</span>
+                </div>
+              )}
               <div className="flex justify-between font-bold text-lg">
                 <span>Tổng cộng:</span>
-                <span>{total.toLocaleString("vi-VN")}đ</span>
+                <span>{formatCurrency(total)}</span>
               </div>
               <Button
                 className="w-full mt-4"
                 size="lg"
                 onClick={handleCheckout}
               >
-                Thanh toán - {total.toLocaleString("vi-VN")}đ
+                Thanh toán - {formatCurrency(total)}
               </Button>
             </div>
           )}

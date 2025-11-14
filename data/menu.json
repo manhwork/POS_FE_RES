@@ -1,0 +1,537 @@
+{
+  "categories": [
+    {
+      "id": "main-dishes",
+      "name": "Món chính",
+      "description": "Các món ăn chính của nhà hàng",
+      "icon": "🍜",
+      "order": 1
+    },
+    {
+      "id": "appetizers",
+      "name": "Món khai vị",
+      "description": "Các món ăn khai vị, món nhúng",
+      "icon": "🥗",
+      "order": 2
+    },
+    {
+      "id": "beverages",
+      "name": "Đồ uống",
+      "description": "Các loại đồ uống nóng lạnh",
+      "icon": "🥤",
+      "order": 3
+    },
+    {
+      "id": "desserts",
+      "name": "Tráng miệng",
+      "description": "Các món tráng miệng truyền thống",
+      "icon": "🍰",
+      "order": 4
+    },
+    {
+      "id": "hot-pot",
+      "name": "Lẩu",
+      "description": "Các loại lẩu cho nhóm",
+      "icon": "🍲",
+      "order": 5
+    }
+  ],
+  "products": [
+    {
+      "id": "pho-bo",
+      "name": "Phở Bò",
+      "description": "Phở bò truyền thống với nước dầm đậm đà, thịt bò tái chín",
+      "price": 65000,
+      "categoryId": "main-dishes",
+      "image": "/images/pho-bo.jpg",
+      "ingredients": ["Bánh phở", "Thịt bò", "Hành lá", "Ngò gai", "Giá đỗ"],
+      "allergens": ["Gluten"],
+      "isAvailable": true,
+      "preparationTime": 15,
+      "isSpicy": false,
+      "nutrition": {
+        "calories": 450,
+        "protein": 25,
+        "carbs": 55,
+        "fat": 12
+      }
+    },
+    {
+      "id": "bun-bo-hue",
+      "name": "Bún Bò Huế",
+      "description": "Bún bò Huế cay nồng với chả, giò heo",
+      "price": 60000,
+      "categoryId": "main-dishes",
+      "image": "/images/bun-bo-hue.jpg",
+      "ingredients": ["Bún", "Thịt bò", "Chả", "Giò heo", "Sả"],
+      "allergens": [],
+      "isAvailable": true,
+      "preparationTime": 18,
+      "isSpicy": true,
+      "nutrition": {
+        "calories": 520,
+        "protein": 28,
+        "carbs": 60,
+        "fat": 15
+      }
+    },
+    {
+      "id": "com-tam",
+      "name": "Cơm Tấm",
+      "description": "Cơm tấm sài gòn với sườn nướng, chả trứng, bì",
+      "price": 55000,
+      "categoryId": "main-dishes",
+      "image": "/images/com-tam.jpg",
+      "ingredients": ["Cơm tấm", "Sườn nướng", "Chả trứng", "Bì", "Nước mắm"],
+      "allergens": ["Eggs"],
+      "isAvailable": true,
+      "preparationTime": 20,
+      "isSpicy": false,
+      "nutrition": {
+        "calories": 680,
+        "protein": 35,
+        "carbs": 70,
+        "fat": 22
+      }
+    },
+    {
+      "id": "banh-mi",
+      "name": "Bánh Mì Thịt Nướng",
+      "description": "Bánh mì giòn với thịt nướng, pate, rau sống",
+      "price": 25000,
+      "categoryId": "main-dishes",
+      "image": "/images/banh-mi.jpg",
+      "ingredients": ["Bánh mì", "Thịt nướng", "Pate", "Rau sống", "Đồ chua"],
+      "allergens": ["Gluten"],
+      "isAvailable": true,
+      "preparationTime": 8,
+      "isSpicy": false,
+      "nutrition": {
+        "calories": 380,
+        "protein": 18,
+        "carbs": 45,
+        "fat": 14
+      }
+    },
+    {
+      "id": "mi-quang",
+      "name": "Mì Quảng",
+      "description": "Mì Quảng đặc sản miền Trung với tôm thịt",
+      "price": 70000,
+      "categoryId": "main-dishes",
+      "image": "/images/mi-quang.jpg",
+      "ingredients": ["Mì quảng", "Tôm", "Thịt heo", "Trứng cút", "Bánh tráng"],
+      "allergens": ["Gluten", "Shellfish", "Eggs"],
+      "isAvailable": true,
+      "preparationTime": 25,
+      "isSpicy": false,
+      "nutrition": {
+        "calories": 580,
+        "protein": 32,
+        "carbs": 65,
+        "fat": 18
+      }
+    },
+    {
+      "id": "com-ga",
+      "name": "Cơm Gà Hấp",
+      "description": "Cơm gà hấp thơm với nước mắm gừng",
+      "price": 85000,
+      "categoryId": "main-dishes",
+      "image": "/images/com-ga.jpg",
+      "ingredients": ["Cơm", "Gà hấp", "Gừng", "Hành lá", "Nước mắm"],
+      "allergens": [],
+      "isAvailable": true,
+      "preparationTime": 30,
+      "isSpicy": false,
+      "nutrition": {
+        "calories": 650,
+        "protein": 45,
+        "carbs": 55,
+        "fat": 20
+      }
+    },
+    {
+      "id": "nem-ran",
+      "name": "Nem Rán",
+      "description": "Nem rán giòn với nhân thịt, tôm, miến",
+      "price": 40000,
+      "categoryId": "appetizers",
+      "image": "/images/nem-ran.jpg",
+      "ingredients": ["Bánh tráng", "Thịt heo", "Tôm", "Miến", "Nấm"],
+      "allergens": ["Shellfish"],
+      "isAvailable": true,
+      "preparationTime": 12,
+      "isSpicy": false,
+      "nutrition": {
+        "calories": 280,
+        "protein": 15,
+        "carbs": 25,
+        "fat": 12
+      }
+    },
+    {
+      "id": "goi-cuon",
+      "name": "Gỏi Cuốn",
+      "description": "Gỏi cuốn tôm thịt tươi mát với rau sống",
+      "price": 35000,
+      "categoryId": "appetizers",
+      "image": "/images/goi-cuon.jpg",
+      "ingredients": ["Bánh tráng", "Tôm", "Thịt heo", "Bún", "Rau sống"],
+      "allergens": ["Shellfish"],
+      "isAvailable": true,
+      "preparationTime": 10,
+      "isSpicy": false,
+      "nutrition": {
+        "calories": 180,
+        "protein": 12,
+        "carbs": 20,
+        "fat": 4
+      }
+    },
+    {
+      "id": "cha-ca",
+      "name": "Chả Cá Lã Vọng",
+      "description": "Chả cá thơm lừng với thì là, hành",
+      "price": 80000,
+      "categoryId": "appetizers",
+      "image": "/images/cha-ca.jpg",
+      "ingredients": ["Cá tra", "Thì là", "Hành", "Bún", "Nước mắm"],
+      "allergens": ["Fish"],
+      "isAvailable": true,
+      "preparationTime": 20,
+      "isSpicy": false,
+      "nutrition": {
+        "calories": 420,
+        "protein": 35,
+        "carbs": 15,
+        "fat": 25
+      }
+    },
+    {
+      "id": "banh-xeo",
+      "name": "Bánh Xèo",
+      "description": "Bánh xèo giòn với tôm thịt, giá đỗ",
+      "price": 50000,
+      "categoryId": "appetizers",
+      "image": "/images/banh-xeo.jpg",
+      "ingredients": ["Bột gạo", "Tôm", "Thịt ba chỉ", "Giá đỗ", "Rau sống"],
+      "allergens": ["Shellfish"],
+      "isAvailable": true,
+      "preparationTime": 15,
+      "isSpicy": false,
+      "nutrition": {
+        "calories": 320,
+        "protein": 18,
+        "carbs": 35,
+        "fat": 12
+      }
+    },
+    {
+      "id": "ca-phe-den",
+      "name": "Cà Phê Đen",
+      "description": "Cà phê đen đậm đà kiểu Việt Nam",
+      "price": 20000,
+      "categoryId": "beverages",
+      "image": "/images/ca-phe-den.jpg",
+      "ingredients": ["Cà phê robusta"],
+      "allergens": [],
+      "isAvailable": true,
+      "preparationTime": 5,
+      "isSpicy": false,
+      "nutrition": {
+        "calories": 5,
+        "protein": 0,
+        "carbs": 1,
+        "fat": 0
+      }
+    },
+    {
+      "id": "ca-phe-sua",
+      "name": "Cà Phê Sữa",
+      "description": "Cà phê sữa đá ngọt ngào truyền thống",
+      "price": 25000,
+      "categoryId": "beverages",
+      "image": "/images/ca-phe-sua.jpg",
+      "ingredients": ["Cà phê robusta", "Sữa đặc"],
+      "allergens": ["Dairy"],
+      "isAvailable": true,
+      "preparationTime": 5,
+      "isSpicy": false,
+      "nutrition": {
+        "calories": 120,
+        "protein": 3,
+        "carbs": 18,
+        "fat": 4
+      }
+    },
+    {
+      "id": "tra-da",
+      "name": "Trà Đá",
+      "description": "Trà đá mát lạnh giải khát",
+      "price": 10000,
+      "categoryId": "beverages",
+      "image": "/images/tra-da.jpg",
+      "ingredients": ["Trà xanh", "Đá"],
+      "allergens": [],
+      "isAvailable": true,
+      "preparationTime": 2,
+      "isSpicy": false,
+      "nutrition": {
+        "calories": 0,
+        "protein": 0,
+        "carbs": 0,
+        "fat": 0
+      }
+    },
+    {
+      "id": "nuoc-dua",
+      "name": "Nước Dừa Tươi",
+      "description": "Nước dừa tươi ngọt mát từ dừa xiêm",
+      "price": 30000,
+      "categoryId": "beverages",
+      "image": "/images/nuoc-dua.jpg",
+      "ingredients": ["Nước dừa tươi"],
+      "allergens": [],
+      "isAvailable": true,
+      "preparationTime": 3,
+      "isSpicy": false,
+      "nutrition": {
+        "calories": 45,
+        "protein": 1,
+        "carbs": 9,
+        "fat": 0
+      }
+    },
+    {
+      "id": "sinh-to-bo",
+      "name": "Sinh Tố Bơ",
+      "description": "Sinh tố bơ béo ngậy với sữa đặc",
+      "price": 35000,
+      "categoryId": "beverages",
+      "image": "/images/sinh-to-bo.jpg",
+      "ingredients": ["Bơ", "Sữa tươi", "Sữa đặc", "Đá"],
+      "allergens": ["Dairy"],
+      "isAvailable": true,
+      "preparationTime": 5,
+      "isSpicy": false,
+      "nutrition": {
+        "calories": 280,
+        "protein": 6,
+        "carbs": 25,
+        "fat": 18
+      }
+    },
+    {
+      "id": "bia-saigon",
+      "name": "Bia Sài Gòn",
+      "description": "Bia Sài Gòn đỏ mát lạnh",
+      "price": 25000,
+      "categoryId": "beverages",
+      "image": "/images/bia-saigon.jpg",
+      "ingredients": ["Bia Sài Gòn"],
+      "allergens": ["Gluten"],
+      "isAvailable": true,
+      "preparationTime": 2,
+      "isSpicy": false,
+      "isAlcoholic": true,
+      "nutrition": {
+        "calories": 150,
+        "protein": 1,
+        "carbs": 12,
+        "fat": 0
+      }
+    },
+    {
+      "id": "che-ba-mau",
+      "name": "Chè Ba Màu",
+      "description": "Chè ba màu truyền thống với đậu, thạch, nước cốt dừa",
+      "price": 20000,
+      "categoryId": "desserts",
+      "image": "/images/che-ba-mau.jpg",
+      "ingredients": ["Đậu đỏ", "Đậu xanh", "Thạch", "Nước cốt dừa"],
+      "allergens": [],
+      "isAvailable": true,
+      "preparationTime": 8,
+      "isSpicy": false,
+      "nutrition": {
+        "calories": 180,
+        "protein": 6,
+        "carbs": 35,
+        "fat": 3
+      }
+    },
+    {
+      "id": "banh-flan",
+      "name": "Bánh Flan",
+      "description": "Bánh flan mềm mịn với caramel",
+      "price": 25000,
+      "categoryId": "desserts",
+      "image": "/images/banh-flan.jpg",
+      "ingredients": ["Trứng", "Sữa tươi", "Đường", "Vani"],
+      "allergens": ["Eggs", "Dairy"],
+      "isAvailable": true,
+      "preparationTime": 5,
+      "isSpicy": false,
+      "nutrition": {
+        "calories": 220,
+        "protein": 8,
+        "carbs": 28,
+        "fat": 9
+      }
+    },
+    {
+      "id": "kem-dua",
+      "name": "Kem Dừa",
+      "description": "Kem dừa thơm ngậy mát lạnh",
+      "price": 30000,
+      "categoryId": "desserts",
+      "image": "/images/kem-dua.jpg",
+      "ingredients": ["Nước cốt dừa", "Sữa tươi", "Đường"],
+      "allergens": ["Dairy"],
+      "isAvailable": true,
+      "preparationTime": 3,
+      "isSpicy": false,
+      "nutrition": {
+        "calories": 200,
+        "protein": 3,
+        "carbs": 20,
+        "fat": 12
+      }
+    },
+    {
+      "id": "trai-cay",
+      "name": "Đĩa Trái Cây",
+      "description": "Đĩa trái cây tươi theo mùa",
+      "price": 35000,
+      "categoryId": "desserts",
+      "image": "/images/trai-cay.jpg",
+      "ingredients": ["Xoài", "Dứa", "Dưa hấu", "Nho", "Kiwi"],
+      "allergens": [],
+      "isAvailable": true,
+      "preparationTime": 5,
+      "isSpicy": false,
+      "nutrition": {
+        "calories": 120,
+        "protein": 2,
+        "carbs": 30,
+        "fat": 0
+      }
+    },
+    {
+      "id": "lau-thai",
+      "name": "Lẩu Thái",
+      "description": "Lẩu Thái chua cay với tôm, cá, rau củ (2-3 người)",
+      "price": 280000,
+      "categoryId": "hot-pot",
+      "image": "/images/lau-thai.jpg",
+      "ingredients": ["Tôm", "Cá", "Rau muống", "Đậu phụ", "Nấm", "Nước lẩu Thái"],
+      "allergens": ["Shellfish", "Fish"],
+      "isAvailable": true,
+      "preparationTime": 35,
+      "isSpicy": true,
+      "servingSize": "2-3 người",
+      "nutrition": {
+        "calories": 450,
+        "protein": 35,
+        "carbs": 20,
+        "fat": 18
+      }
+    },
+    {
+      "id": "lau-ga",
+      "name": "Lẩu Gà",
+      "description": "Lẩu gà ngọt thanh với lá giang, rau củ (2-4 người)",
+      "price": 320000,
+      "categoryId": "hot-pot",
+      "image": "/images/lau-ga.jpg",
+      "ingredients": ["Gà ta", "Lá giang", "Nấm", "Rau muống", "Miến", "Nước dùng gà"],
+      "allergens": [],
+      "isAvailable": true,
+      "preparationTime": 40,
+      "isSpicy": false,
+      "servingSize": "2-4 người",
+      "nutrition": {
+        "calories": 380,
+        "protein": 40,
+        "carbs": 15,
+        "fat": 15
+      }
+    },
+    {
+      "id": "lau-bo",
+      "name": "Lẩu Bò",
+      "description": "Lẩu bò nhúng dấm với bánh tráng, rau sống (3-4 người)",
+      "price": 380000,
+      "categoryId": "hot-pot",
+      "image": "/images/lau-bo.jpg",
+      "ingredients": ["Thịt bò", "Bánh tráng", "Rau sống", "Dứa", "Cà chua", "Nước lẩu chua"],
+      "allergens": [],
+      "isAvailable": true,
+      "preparationTime": 45,
+      "isSpicy": false,
+      "servingSize": "3-4 người",
+      "nutrition": {
+        "calories": 420,
+        "protein": 45,
+        "carbs": 25,
+        "fat": 16
+      }
+    }
+  ],
+  "allergens": [
+    {
+      "id": "gluten",
+      "name": "Gluten",
+      "description": "Chứa gluten từ lúa mì"
+    },
+    {
+      "id": "dairy",
+      "name": "Dairy",
+      "description": "Chứa sữa và các sản phẩm từ sữa"
+    },
+    {
+      "id": "eggs",
+      "name": "Eggs",
+      "description": "Chứa trứng"
+    },
+    {
+      "id": "fish",
+      "name": "Fish",
+      "description": "Chứa cá"
+    },
+    {
+      "id": "shellfish",
+      "name": "Shellfish",
+      "description": "Chứa tôm, cua, nghêu sò"
+    },
+    {
+      "id": "nuts",
+      "name": "Nuts",
+      "description": "Chứa các loại hạt"
+    }
+  ],
+  "promotions": [
+    {
+      "id": "happy-hour",
+      "name": "Happy Hour",
+      "description": "Giảm 20% đồ uống từ 14h-16h",
+      "discountType": "percentage",
+      "discountValue": 20,
+      "applicableCategories": ["beverages"],
+      "startTime": "14:00",
+      "endTime": "16:00",
+      "isActive": true
+    },
+    {
+      "id": "combo-pho",
+      "name": "Combo Phở + Nước",
+      "description": "Phở + nước uống chỉ 75k",
+      "discountType": "fixed",
+      "discountValue": 10000,
+      "applicableProducts": ["pho-bo", "bun-bo-hue"],
+      "requiredProducts": ["tra-da", "ca-phe-den"],
+      "isActive": true
+    }
+  ]
+}
