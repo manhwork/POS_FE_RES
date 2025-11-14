@@ -1,0 +1,129 @@
+"use client"
+
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { AlertTriangle, Package, Plus, Minus, MoreHorizontal } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+
+export interface InventoryItem {
+  id: string
+  name: string
+  sku: string
+  category: string
+  currentStock: number
+  reorderPoint: number
+  maxStock: number
+  unitCost: number
+  totalValue: number
+  lastUpdated: string
+  status: "in-stock" | "low-stock" | "out-of-stock"
+}
+
+interface InventoryTableProps {
+  items: InventoryItem[]
+  onAdjustStock: (id: string, type: "add" | "remove") => void
+  onViewHistory: (id: string) => void
+}
+
+export function InventoryTable({ items, onAdjustStock, onViewHistory }: InventoryTableProps) {
+  const getStatusBadge = (item: InventoryItem) => {
+    if (item.currentStock === 0) {
+      return <Badge variant="destructive">Out of Stock</Badge>
+    }
+    if (item.currentStock <= item.reorderPoint) {
+      return (
+        <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+          Low Stock
+        </Badge>
+      )
+    }
+    return (
+      <Badge variant="default" className="bg-green-100 text-green-800">
+        In Stock
+      </Badge>
+    )
+  }
+
+  return (
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Product</TableHead>
+            <TableHead>SKU</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead>Current Stock</TableHead>
+            <TableHead>Reorder Point</TableHead>
+            <TableHead>Unit Cost</TableHead>
+            <TableHead>Total Value</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Last Updated</TableHead>
+            <TableHead className="w-[100px]">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {items.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
+                No inventory items found
+              </TableCell>
+            </TableRow>
+          ) : (
+            items.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell className="font-medium">
+                  <div className="flex items-center gap-2">
+                    {item.currentStock <= item.reorderPoint && item.currentStock > 0 && (
+                      <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                    )}
+                    {item.currentStock === 0 && <AlertTriangle className="h-4 w-4 text-red-500" />}
+                    {item.name}
+                  </div>
+                </TableCell>
+                <TableCell className="font-mono text-sm">{item.sku}</TableCell>
+                <TableCell>{item.category}</TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{item.currentStock}</span>
+                    <span className="text-muted-foreground">/ {item.maxStock}</span>
+                  </div>
+                </TableCell>
+                <TableCell>{item.reorderPoint}</TableCell>
+                <TableCell>${item.unitCost.toFixed(2)}</TableCell>
+                <TableCell className="font-medium">${item.totalValue.toFixed(2)}</TableCell>
+                <TableCell>{getStatusBadge(item)}</TableCell>
+                <TableCell className="text-sm text-muted-foreground">
+                  {new Date(item.lastUpdated).toLocaleDateString()}
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-1">
+                    <Button variant="outline" size="sm" onClick={() => onAdjustStock(item.id, "remove")}>
+                      <Minus className="h-3 w-3" />
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => onAdjustStock(item.id, "add")}>
+                      <Plus className="h-3 w-3" />
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => onViewHistory(item.id)}>
+                          <Package className="h-4 w-4 mr-2" />
+                          View History
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
+    </div>
+  )
+}
