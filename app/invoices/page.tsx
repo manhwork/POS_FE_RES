@@ -1,213 +1,236 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { DashboardLayout } from "@/components/dashboard-layout"
-import { useToast } from "@/hooks/use-toast"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
-import { InvoiceTable } from "@/components/invoices/invoice-table"
-import { InvoiceModal } from "@/components/invoices/invoice-modal"
-import { InvoiceDetailsModal } from "@/components/invoices/invoice-details-modal"
-import { InvoiceFilters } from "@/components/invoices/invoice-filters"
-import { InvoiceStats } from "@/components/invoices/invoice-stats"
-
-interface Invoice {
-  id: string
-  invoiceNumber: string
-  customerName: string
-  customerEmail: string
-  customerAddress?: string
-  issueDate: string
-  dueDate: string
-  amount: number
-  status: "draft" | "sent" | "paid" | "overdue" | "cancelled"
-  items: Array<{
-    description: string
-    quantity: number
-    unitPrice: number
-    total: number
-  }>
-  notes?: string
-}
-
-// Sample data
-const sampleInvoices: Invoice[] = [
-  {
-    id: "1",
-    invoiceNumber: "INV-001",
-    customerName: "John Doe",
-    customerEmail: "john@example.com",
-    customerAddress: "123 Main St\nNew York, NY 10001",
-    issueDate: "2024-01-15",
-    dueDate: "2024-02-15",
-    amount: 1250.0,
-    status: "paid",
-    items: [
-      { description: "Web Development Services", quantity: 1, unitPrice: 1000.0, total: 1000.0 },
-      { description: "Domain Registration", quantity: 1, unitPrice: 250.0, total: 250.0 },
-    ],
-    notes: "Thank you for your business!",
-  },
-  {
-    id: "2",
-    invoiceNumber: "INV-002",
-    customerName: "Jane Smith",
-    customerEmail: "jane@company.com",
-    customerAddress: "456 Business Ave\nLos Angeles, CA 90210",
-    issueDate: "2024-01-20",
-    dueDate: "2024-02-20",
-    amount: 750.0,
-    status: "sent",
-    items: [
-      { description: "Logo Design", quantity: 1, unitPrice: 500.0, total: 500.0 },
-      { description: "Business Cards", quantity: 1, unitPrice: 250.0, total: 250.0 },
-    ],
-  },
-  {
-    id: "3",
-    invoiceNumber: "INV-003",
-    customerName: "Bob Johnson",
-    customerEmail: "bob@startup.com",
-    issueDate: "2024-01-25",
-    dueDate: "2024-01-25",
-    amount: 2000.0,
-    status: "overdue",
-    items: [{ description: "Mobile App Development", quantity: 1, unitPrice: 2000.0, total: 2000.0 }],
-  },
-]
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { DashboardLayout } from "@/components/dashboard-layout";
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Plus, Loader2 } from "lucide-react";
+import { InvoiceTable } from "@/components/invoices/invoice-table";
+import { InvoiceModal } from "@/components/invoices/invoice-modal";
+import { InvoiceDetailsModal } from "@/components/invoices/invoice-details-modal";
+import { InvoiceFilters } from "@/components/invoices/invoice-filters";
+import { InvoiceStats } from "@/components/invoices/invoice-stats";
+import { Invoice, Order } from "@/lib/data";
 
 export default function InvoicesPage() {
-  const [invoices, setInvoices] = useState<Invoice[]>(sampleInvoices)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false)
-  const [editingInvoice, setEditingInvoice] = useState<Invoice | undefined>()
-  const [viewingInvoice, setViewingInvoice] = useState<Invoice | null>(null)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const { toast } = useToast()
+    const [invoices, setInvoices] = useState<Invoice[]>([]);
+    const [completedOrders, setCompletedOrders] = useState<Order[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+    const [editingInvoice, setEditingInvoice] = useState<Invoice | undefined>();
+    const [viewingInvoice, setViewingInvoice] = useState<Invoice | null>(null);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all");
+    const { toast } = useToast();
 
-  const filteredInvoices = invoices.filter((invoice) => {
-    const matchesSearch =
-      invoice.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      invoice.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      invoice.customerEmail.toLowerCase().includes(searchTerm.toLowerCase())
+    const fetchInvoicesAndOrders = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            const [invoicesRes, ordersRes] = await Promise.all([
+                fetch("/api/invoices"),
+                fetch("/api/orders"),
+            ]);
+            const invoicesData: Invoice[] = await invoicesRes.json();
+            const ordersData: Order[] = await ordersRes.json();
 
-    const matchesStatus = statusFilter === "all" || invoice.status === statusFilter
+            setInvoices(invoicesData);
+            setCompletedOrders(
+                ordersData.filter((order) => order.status === "completed")
+            );
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Could not fetch data.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    }, [toast]);
 
-    return matchesSearch && matchesStatus
-  })
+    useEffect(() => {
+        fetchInvoicesAndOrders();
+    }, [fetchInvoicesAndOrders]);
 
-  const handleSave = (invoiceData: Omit<Invoice, "id">) => {
-    if (editingInvoice) {
-      setInvoices(
-        invoices.map((invoice) =>
-          invoice.id === editingInvoice.id ? { ...invoiceData, id: editingInvoice.id } : invoice,
-        ),
-      )
-      toast({
-        title: "Invoice updated",
-        description: `Invoice ${invoiceData.invoiceNumber} has been updated successfully.`,
-      })
-    } else {
-      const newInvoice: Invoice = {
-        ...invoiceData,
-        id: Date.now().toString(),
-      }
-      setInvoices([newInvoice, ...invoices])
-      toast({
-        title: "Invoice created",
-        description: `Invoice ${invoiceData.invoiceNumber} has been created successfully.`,
-      })
+    const filteredInvoices = useMemo(() => {
+        return invoices.filter((invoice) => {
+            const matchesSearch =
+                invoice.invoiceNumber
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase()) ||
+                (invoice.customerName &&
+                    invoice.customerName
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase())) ||
+                (invoice.customerPhone &&
+                    invoice.customerPhone
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase()));
+
+            const matchesStatus =
+                statusFilter === "all" || invoice.status === statusFilter;
+
+            return matchesSearch && matchesStatus;
+        });
+    }, [invoices, searchTerm, statusFilter]);
+
+    const handleSave = async (
+        invoiceData: Omit<Invoice, "id" | "generatedAt">
+    ) => {
+        try {
+            const method = editingInvoice?.id ? "PUT" : "POST";
+            const url = "/api/invoices";
+            const res = await fetch(url, {
+                method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    ...invoiceData,
+                    ...(editingInvoice?.id && { id: editingInvoice.id }),
+                }),
+            });
+            if (!res.ok) throw new Error("Failed to save invoice.");
+            toast({
+                title: "Success",
+                description: `Invoice ${invoiceData.invoiceNumber} saved successfully.`,
+            });
+            fetchInvoicesAndOrders();
+            setIsModalOpen(false);
+            setEditingInvoice(undefined);
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Could not save invoice.",
+                variant: "destructive",
+            });
+        }
+    };
+
+    const handleEdit = (invoice: Invoice) => {
+        setEditingInvoice(invoice);
+        setIsModalOpen(true);
+    };
+
+    const handleView = (invoice: Invoice) => {
+        setViewingInvoice(invoice);
+        setIsDetailsModalOpen(true);
+    };
+
+    const handleDelete = async (id: string) => {
+        if (!confirm("Are you sure you want to delete this invoice?")) return;
+        try {
+            const res = await fetch("/api/invoices", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id }),
+            });
+            if (!res.ok) throw new Error("Failed to delete invoice.");
+            toast({
+                title: "Success",
+                description: "Invoice deleted successfully.",
+            });
+            fetchInvoicesAndOrders();
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Could not delete invoice.",
+                variant: "destructive",
+            });
+        }
+    };
+
+    const handleClearFilters = () => {
+        setSearchTerm("");
+        setStatusFilter("all");
+    };
+
+    // Calculate stats
+    const totalInvoices = invoices.length;
+    const totalRevenue = invoices
+        .filter((inv) => inv.status === "paid")
+        .reduce((sum, inv) => sum + inv.amount, 0);
+    const pendingInvoices = invoices.filter((inv) =>
+        ["sent", "overdue"].includes(inv.status)
+    ).length;
+    const paidInvoices = invoices.filter((inv) => inv.status === "paid").length;
+
+    if (isLoading) {
+        return (
+            <DashboardLayout>
+                <div className="h-full flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+            </DashboardLayout>
+        );
     }
-    setIsModalOpen(false)
-    setEditingInvoice(undefined)
-  }
 
-  const handleEdit = (invoice: Invoice) => {
-    setEditingInvoice(invoice)
-    setIsModalOpen(true)
-  }
+    return (
+        <DashboardLayout>
+            <div className="p-6 space-y-6">
+                <div className="flex justify-between items-center">
+                    <div>
+                        <h1 className="text-3xl font-bold">Invoices</h1>
+                        <p className="text-muted-foreground">
+                            Manage your invoices and billing
+                        </p>
+                    </div>
+                    <Button
+                        onClick={() => {
+                            setEditingInvoice(undefined);
+                            setIsModalOpen(true);
+                        }}
+                    >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Create Invoice
+                    </Button>
+                </div>
 
-  const handleView = (invoice: Invoice) => {
-    setViewingInvoice(invoice)
-    setIsDetailsModalOpen(true)
-  }
+                <InvoiceStats
+                    totalInvoices={totalInvoices}
+                    totalRevenue={totalRevenue}
+                    pendingInvoices={pendingInvoices}
+                    paidInvoices={paidInvoices}
+                />
 
-  const handleDelete = (id: string) => {
-    const invoice = invoices.find((inv) => inv.id === id)
-    setInvoices(invoices.filter((invoice) => invoice.id !== id))
-    toast({
-      title: "Invoice deleted",
-      description: `Invoice ${invoice?.invoiceNumber} has been deleted.`,
-      variant: "destructive",
-    })
-  }
+                <InvoiceFilters
+                    searchTerm={searchTerm}
+                    onSearchChange={setSearchTerm}
+                    statusFilter={statusFilter}
+                    onStatusFilterChange={setStatusFilter}
+                    onClearFilters={handleClearFilters}
+                />
 
-  const handleClearFilters = () => {
-    setSearchTerm("")
-    setStatusFilter("all")
-  }
+                <InvoiceTable
+                    invoices={filteredInvoices}
+                    onEdit={handleEdit}
+                    onView={handleView}
+                    onDelete={handleDelete}
+                />
 
-  // Calculate stats
-  const totalInvoices = invoices.length
-  const totalRevenue = invoices.filter((inv) => inv.status === "paid").reduce((sum, inv) => sum + inv.amount, 0)
-  const pendingInvoices = invoices.filter((inv) => ["sent", "overdue"].includes(inv.status)).length
-  const paidInvoices = invoices.filter((inv) => inv.status === "paid").length
+                <InvoiceModal
+                    isOpen={isModalOpen}
+                    onClose={() => {
+                        setIsModalOpen(false);
+                        setEditingInvoice(undefined);
+                    }}
+                    onSave={handleSave}
+                    invoice={editingInvoice}
+                    completedOrders={completedOrders}
+                />
 
-  return (
-    <DashboardLayout>
-      <div className="p-6 space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold">Invoices</h1>
-            <p className="text-muted-foreground">Manage your invoices and billing</p>
-          </div>
-          <Button onClick={() => setIsModalOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            Create Invoice
-          </Button>
-        </div>
-
-        <InvoiceStats
-          totalInvoices={totalInvoices}
-          totalRevenue={totalRevenue}
-          pendingInvoices={pendingInvoices}
-          paidInvoices={paidInvoices}
-        />
-
-        <InvoiceFilters
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          statusFilter={statusFilter}
-          onStatusFilterChange={setStatusFilter}
-          onClearFilters={handleClearFilters}
-        />
-
-        <InvoiceTable invoices={filteredInvoices} onEdit={handleEdit} onView={handleView} onDelete={handleDelete} />
-
-        <InvoiceModal
-          isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false)
-            setEditingInvoice(undefined)
-          }}
-          onSave={handleSave}
-          invoice={editingInvoice}
-        />
-
-        <InvoiceDetailsModal
-          isOpen={isDetailsModalOpen}
-          onClose={() => {
-            setIsDetailsModalOpen(false)
-            setViewingInvoice(null)
-          }}
-          invoice={viewingInvoice}
-          onEdit={(invoice) => {
-            setIsDetailsModalOpen(false)
-            handleEdit(invoice)
-          }}
-        />
-      </div>
-    </DashboardLayout>
-  )
+                <InvoiceDetailsModal
+                    isOpen={isDetailsModalOpen}
+                    onClose={() => {
+                        setIsDetailsModalOpen(false);
+                        setViewingInvoice(null);
+                    }}
+                    invoice={viewingInvoice}
+                    onEdit={(invoice) => {
+                        setIsDetailsModalOpen(false);
+                        handleEdit(invoice);
+                    }}
+                />
+            </div>
+        </DashboardLayout>
+    );
 }

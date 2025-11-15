@@ -114,6 +114,31 @@ export interface Promotion {
     isActive: boolean;
 }
 
+export interface InvoiceItem {
+    id: string;
+    name: string;
+    quantity: number;
+    unitPrice: number;
+    total: number;
+}
+
+export interface Invoice {
+    id: string;
+    orderId: string; // Link to the Order
+    invoiceNumber: string;
+    customerName?: string;
+    customerEmail?: string; // Made optional
+    customerPhone?: string;
+    customerAddress?: string;
+    issueDate: string;
+    dueDate: string;
+    amount: number; // Final amount after discounts
+    status: "draft" | "sent" | "paid" | "overdue" | "cancelled";
+    items: InvoiceItem[];
+    notes?: string;
+    generatedAt: string;
+}
+
 export interface PaymentMethod {
     id: string;
     name: string;

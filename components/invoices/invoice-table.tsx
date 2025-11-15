@@ -5,23 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal, Eye, Edit, Trash2, Download } from "lucide-react"
 import { toast } from "sonner"
-
-interface Invoice {
-  id: string
-  invoiceNumber: string
-  customerName: string
-  customerEmail: string
-  issueDate: string
-  dueDate: string
-  amount: number
-  status: "draft" | "sent" | "paid" | "overdue" | "cancelled"
-  items: Array<{
-    description: string
-    quantity: number
-    unitPrice: number
-    total: number
-  }>
-}
+import { Invoice } from "@/lib/data"
 
 interface InvoiceTableProps {
   invoices: Invoice[]
@@ -70,8 +54,10 @@ export function InvoiceTable({ invoices, onEdit, onView, onDelete }: InvoiceTabl
               <TableCell className="font-medium">{invoice.invoiceNumber}</TableCell>
               <TableCell>
                 <div>
-                  <div className="font-medium">{invoice.customerName}</div>
-                  <div className="text-sm text-muted-foreground">{invoice.customerEmail}</div>
+                  <div className="font-medium">{invoice.customerName || "N/A"}</div>
+                  {invoice.customerEmail && (
+                    <div className="text-sm text-muted-foreground">{invoice.customerEmail}</div>
+                  )}
                 </div>
               </TableCell>
               <TableCell>{invoice.issueDate}</TableCell>
