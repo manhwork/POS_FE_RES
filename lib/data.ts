@@ -241,3 +241,34 @@ export const calculateTotal = (subtotal: number): number => {
 };
 
 export default {};
+
+export interface HistoricOrderItem {
+    id: string;
+    name: string;
+    price: number;
+    quantity: number;
+}
+
+export interface Order {
+    id: string;
+    tableId: string;
+    tableName: string;
+    guestCount: number;
+    items: HistoricOrderItem[];
+    startTime: string; // ISO 8601 string
+    endTime?: string; // ISO 8601 string, optional until completed
+    status: "pending" | "processing" | "completed" | "cancelled";
+    subtotal: number;
+    tax: number;
+    total: number;
+    paymentMethod?: string; // Optional until completed
+}
+
+export interface InventoryItem {
+    id: string; // Corresponds to Product ID
+    sku: string;
+    currentStock: number;
+    reorderPoint: number;
+    unitCost: number;
+    lastUpdated: string; // ISO 8601 string
+}

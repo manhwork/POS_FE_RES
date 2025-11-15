@@ -1,318 +1,207 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { DashboardLayout } from "@/components/dashboard-layout";
-import {
-  InventoryTable,
-  type InventoryItem,
-} from "@/components/inventory/inventory-table";
-import { InventoryStats } from "@/components/inventory/inventory-stats";
-import { InventoryFilters } from "@/components/inventory/inventory-filters";
+import { InventoryTable } from "@/components/inventory/inventory-table";
 import { StockAdjustmentModal } from "@/components/inventory/stock-adjustment-modal";
-import {
-  InventoryHistoryModal,
-  type StockMovement,
-} from "@/components/inventory/inventory-history-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Download, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Product, InventoryItem } from "@/lib/data";
+import { Loader2 } from "lucide-react";
 
-// Sample inventory data
-const sampleInventory: InventoryItem[] = [
-  {
-    id: "1",
-    name: "Premium Coffee",
-    sku: "BEV-COFFEE01",
-    category: "Beverages",
-    currentStock: 25,
-    reorderPoint: 50,
-    maxStock: 200,
-    unitCost: 2.5,
-    totalValue: 62.5,
-    lastUpdated: "2024-01-15T10:00:00Z",
-    status: "low-stock",
-  },
-  {
-    id: "2",
-    name: "Club Sandwich",
-    sku: "FOO-SAND01",
-    category: "Food",
-    currentStock: 45,
-    reorderPoint: 20,
-    maxStock: 100,
-    unitCost: 6.5,
-    totalValue: 292.5,
-    lastUpdated: "2024-01-14T14:30:00Z",
-    status: "in-stock",
-  },
-  {
-    id: "3",
-    name: "Blueberry Muffin",
-    sku: "DES-MUFF01",
-    category: "Desserts",
-    currentStock: 0,
-    reorderPoint: 15,
-    maxStock: 50,
-    unitCost: 3.0,
-    totalValue: 0,
-    lastUpdated: "2024-01-13T09:15:00Z",
-    status: "out-of-stock",
-  },
-  {
-    id: "4",
-    name: "Green Tea",
-    sku: "BEV-TEA01",
-    category: "Beverages",
-    currentStock: 75,
-    reorderPoint: 30,
-    maxStock: 150,
-    unitCost: 2.0,
-    totalValue: 150,
-    lastUpdated: "2024-01-12T16:45:00Z",
-    status: "in-stock",
-  },
-  {
-    id: "5",
-    name: "Caesar Salad",
-    sku: "FOO-SAL01",
-    category: "Food",
-    currentStock: 12,
-    reorderPoint: 15,
-    maxStock: 40,
-    unitCost: 8.5,
-    totalValue: 102,
-    lastUpdated: "2024-01-11T11:20:00Z",
-    status: "low-stock",
-  },
-];
-
-// Sample stock movement history data
-const sampleStockMovements: Record<string, StockMovement[]> = {
-  "1": [
-    {
-      id: "1",
-      date: "2024-01-15T10:00:00Z",
-      type: "remove",
-      quantity: 25,
-      previousStock: 50,
-      newStock: 25,
-      reason: "Daily sales",
-      user: "John Doe",
-      notes: "Morning rush sales",
-    },
-    {
-      id: "2",
-      date: "2024-01-14T14:30:00Z",
-      type: "restock",
-      quantity: 100,
-      previousStock: 20,
-      newStock: 120,
-      reason: "Weekly restock",
-      user: "Admin",
-      notes: "Supplier delivery",
-    },
-    {
-      id: "3",
-      date: "2024-01-13T09:15:00Z",
-      type: "adjustment",
-      quantity: 5,
-      previousStock: 25,
-      newStock: 20,
-      reason: "Inventory count correction",
-      user: "Manager",
-      notes: "Physical count discrepancy",
-    },
-  ],
-  "2": [
-    {
-      id: "4",
-      date: "2024-01-14T14:30:00Z",
-      type: "sale",
-      quantity: 15,
-      previousStock: 60,
-      newStock: 45,
-      reason: "Customer orders",
-      user: "Cashier 1",
-    },
-  ],
-};
+// This is a new combined type for display purposes
+export interface DisplayInventoryItem
+    extends Product,
+        Omit<InventoryItem, "id"> {
+    totalValue: number;
+    status: "in-stock" | "low-stock" | "out-of-stock";
+}
 
 export default function InventoryPage() {
-  const [inventory, setInventory] = useState<InventoryItem[]>(sampleInventory);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("All Categories");
-  const [statusFilter, setStatusFilter] = useState("All Status");
-  const [isAdjustmentModalOpen, setIsAdjustmentModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
-  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
-  const [selectedItemForHistory, setSelectedItemForHistory] =
-    useState<InventoryItem | null>(null);
-  const { toast } = useToast();
+    const [inventory, setInventory] = useState<DisplayInventoryItem[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const { toast } = useToast();
 
-  const filteredInventory = useMemo(() => {
-    return inventory.filter((item) => {
-      const matchesSearch =
-        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.sku.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory =
-        categoryFilter === "All Categories" || item.category === categoryFilter;
-      const matchesStatus =
-        statusFilter === "All Status" || item.status === statusFilter;
+    const [isAdjustmentModalOpen, setIsAdjustmentModalOpen] = useState(false);
+    const [selectedItem, setSelectedItem] =
+        useState<DisplayInventoryItem | null>(null);
 
-      return matchesSearch && matchesCategory && matchesStatus;
-    });
-  }, [inventory, searchTerm, categoryFilter, statusFilter]);
+    const fetchDataAndSync = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            const [menuRes, inventoryRes] = await Promise.all([
+                fetch("/api/menu"),
+                fetch("/api/inventory"),
+            ]);
 
-  const handleAdjustStock = (id: string, type: "add" | "remove") => {
-    const item = inventory.find((i) => i.id === id);
-    if (item) {
-      setSelectedItem(item);
-      setIsAdjustmentModalOpen(true);
-    }
-  };
+            const menuData = await menuRes.json();
+            const inventoryData: InventoryItem[] = await inventoryRes.json();
 
-  const handleSaveAdjustment = (adjustment: {
-    itemId: string;
-    type: "add" | "remove";
-    quantity: number;
-    reason: string;
-    notes?: string;
-  }) => {
-    setInventory((items) =>
-      items.map((item) => {
-        if (item.id === adjustment.itemId) {
-          const newStock =
-            adjustment.type === "add"
-              ? item.currentStock + adjustment.quantity
-              : Math.max(0, item.currentStock - adjustment.quantity);
+            const products: Product[] = menuData.products;
+            const inventoryMap = new Map(
+                inventoryData.map((item) => [item.id, item])
+            );
+            let inventoryNeedsUpdate = false;
 
-          const newStatus: InventoryItem["status"] =
-            newStock === 0
-              ? "out-of-stock"
-              : newStock <= item.reorderPoint
-                ? "low-stock"
-                : "in-stock";
+            products.forEach((product) => {
+                if (!inventoryMap.has(product.id)) {
+                    inventoryMap.set(product.id, {
+                        id: product.id,
+                        sku: `SKU-${product.id.substring(0, 6).toUpperCase()}`,
+                        currentStock: 0,
+                        reorderPoint: 10, // Default value
+                        unitCost: product.price * 0.4, // Assume a 40% cost margin
+                        lastUpdated: new Date().toISOString(),
+                    });
+                    inventoryNeedsUpdate = true;
+                }
+            });
 
-          return {
-            ...item,
-            currentStock: newStock,
-            totalValue: newStock * item.unitCost,
-            status: newStatus,
-            lastUpdated: new Date().toISOString(),
-          };
+            if (inventoryNeedsUpdate) {
+                const fullInventory = Array.from(inventoryMap.values());
+                await fetch("/api/inventory", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(fullInventory),
+                });
+            }
+
+            const productMap = new Map(products.map((p) => [p.id, p]));
+            const displayInventory = Array.from(inventoryMap.values())
+                .map((invItem) => {
+                    const product = productMap.get(invItem.id);
+                    if (!product) return null; // Should not happen
+
+                    const totalValue = invItem.currentStock * invItem.unitCost;
+                    const status: DisplayInventoryItem["status"] =
+                        invItem.currentStock === 0
+                            ? "out-of-stock"
+                            : invItem.currentStock <= invItem.reorderPoint
+                            ? "low-stock"
+                            : "in-stock";
+
+                    return {
+                        ...product,
+                        ...invItem,
+                        totalValue,
+                        status,
+                    };
+                })
+                .filter((item): item is DisplayInventoryItem => item !== null);
+
+            setInventory(displayInventory);
+        } catch (error) {
+            console.error("Failed to fetch or sync inventory:", error);
+            toast({
+                title: "Error",
+                description: "Could not load inventory data.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsLoading(false);
         }
-        return item;
-      }),
-    );
+    }, [toast]);
 
-    toast({
-      title: "Stock adjusted",
-      description: `${adjustment.type === "add" ? "Added" : "Removed"} ${adjustment.quantity} units`,
-    });
-  };
+    useEffect(() => {
+        fetchDataAndSync();
+    }, [fetchDataAndSync]);
 
-  const handleViewHistory = (id: string) => {
-    const item = inventory.find((i) => i.id === id);
-    if (item) {
-      setSelectedItemForHistory(item);
-      setIsHistoryModalOpen(true);
+    const handleAdjustStock = (id: string) => {
+        const item = inventory.find((i) => i.id === id);
+        if (item) {
+            setSelectedItem(item);
+            setIsAdjustmentModalOpen(true);
+        }
+    };
+
+    const handleSaveAdjustment = async (adjustment: {
+        itemId: string;
+        quantity: number;
+        reason: string;
+    }) => {
+        const itemToUpdate = inventory.find((i) => i.id === adjustment.itemId);
+        if (!itemToUpdate) return;
+
+        const change = adjustment.quantity - itemToUpdate.currentStock;
+
+        try {
+            await fetch("/api/inventory", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify([{ id: adjustment.itemId, change }]),
+            });
+
+            toast({
+                title: "Stock adjusted",
+                description: `Stock for ${itemToUpdate.name} set to ${adjustment.quantity}.`,
+            });
+            fetchDataAndSync(); // Refresh data
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Failed to update stock.",
+                variant: "destructive",
+            });
+        }
+    };
+
+    // Dummy handlers for now
+    const handleViewHistory = (id: string) => {
+        toast({
+            title: "Coming soon!",
+            description: "Stock history view is not yet implemented.",
+        });
+    };
+
+    const handleExport = () => {
+        toast({
+            title: "Exporting inventory",
+            description: "Inventory data exported to CSV",
+        });
+    };
+
+    const handleImport = () => {
+        toast({
+            title: "Import inventory",
+            description: "Bulk import feature coming soon",
+        });
+    };
+
+    if (isLoading) {
+        return (
+            <DashboardLayout>
+                <div className="h-full flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+            </DashboardLayout>
+        );
     }
-  };
 
-  const handleClearFilters = () => {
-    setSearchTerm("");
-    setCategoryFilter("All Categories");
-    setStatusFilter("All Status");
-  };
+    return (
+        <DashboardLayout>
+            <div className="p-6 space-y-6">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>
+                            Inventory Items ({inventory.length})
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <InventoryTable
+                            items={inventory}
+                            onAdjustStock={handleAdjustStock}
+                            onViewHistory={handleViewHistory}
+                        />
+                    </CardContent>
+                </Card>
 
-  const handleExport = () => {
-    toast({
-      title: "Exporting inventory",
-      description: "Inventory data exported to CSV",
-    });
-  };
-
-  const handleImport = () => {
-    toast({
-      title: "Import inventory",
-      description: "Bulk import feature coming soon",
-    });
-  };
-
-  return (
-    <DashboardLayout>
-      <div className="p-6 space-y-6">
-        {/*<div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold">Inventory Management</h1>
-            <p className="text-muted-foreground">
-              Track and manage your stock levels
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={handleImport}>
-              <Upload className="h-4 w-4 mr-2" />
-              Import
-            </Button>
-            <Button variant="outline" onClick={handleExport}>
-              <Download className="h-4 w-4 mr-2" />
-              Export
-            </Button>
-          </div>
-        </div>*/}
-
-        {/*<InventoryStats items={inventory} />*/}
-
-        {/*<Card>
-          <CardHeader>
-            <CardTitle>Inventory Filters</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <InventoryFilters
-              searchTerm={searchTerm}
-              onSearchChange={setSearchTerm}
-              categoryFilter={categoryFilter}
-              onCategoryChange={setCategoryFilter}
-              statusFilter={statusFilter}
-              onStatusChange={setStatusFilter}
-              onClearFilters={handleClearFilters}
-            />
-          </CardContent>
-        </Card>*/}
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Inventory Items ({filteredInventory.length})</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <InventoryTable
-              items={filteredInventory}
-              onAdjustStock={handleAdjustStock}
-              onViewHistory={handleViewHistory}
-            />
-          </CardContent>
-        </Card>
-
-        <StockAdjustmentModal
-          isOpen={isAdjustmentModalOpen}
-          onClose={() => setIsAdjustmentModalOpen(false)}
-          onSave={handleSaveAdjustment}
-          item={selectedItem}
-        />
-
-        <InventoryHistoryModal
-          isOpen={isHistoryModalOpen}
-          onClose={() => setIsHistoryModalOpen(false)}
-          itemName={selectedItemForHistory?.name || ""}
-          itemSku={selectedItemForHistory?.sku || ""}
-          movements={
-            selectedItemForHistory
-              ? sampleStockMovements[selectedItemForHistory.id] || []
-              : []
-          }
-        />
-      </div>
-    </DashboardLayout>
-  );
+                <StockAdjustmentModal
+                    isOpen={isAdjustmentModalOpen}
+                    onClose={() => setIsAdjustmentModalOpen(false)}
+                    onSave={handleSaveAdjustment}
+                    item={selectedItem}
+                />
+            </div>
+        </DashboardLayout>
+    );
 }

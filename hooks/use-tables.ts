@@ -8,6 +8,7 @@ import {
     calculateTotal,
     Product,
     Category,
+    Order,
 } from "@/lib/data";
 
 export interface OrderItem {
@@ -20,6 +21,7 @@ export interface OrderItem {
 export interface TableOrder {
     id: string;
     tableId: string;
+    guestCount: number;
     items: OrderItem[];
     startTime: Date;
     status: "active" | "completed" | "cancelled";
@@ -71,7 +73,27 @@ export function useTables() {
             const tablesData = await tablesRes.json();
             const menuData = await menuRes.json();
 
-            setTables(convertTableData(tablesData.tables));
+            const initialTables = convertTableData(tablesData.tables);
+            const initialOrders = new Map<string, TableOrder>();
+
+            initialTables.forEach((table) => {
+                if (table.currentOrder) {
+                    initialOrders.set(table.id, {
+                        id: table.currentOrder.id,
+                        tableId: table.id,
+                        guestCount: 0, // This data is missing from tables.json, defaulting to 0
+                        items: [], // This data is also missing, starting with an empty cart
+                        startTime: table.currentOrder.startTime,
+                        status: "active",
+                        subtotal: table.currentOrder.totalAmount,
+                        tax: 0, // Missing data
+                        total: table.currentOrder.totalAmount,
+                    });
+                }
+            });
+
+            setTables(initialTables);
+            setOrders(initialOrders);
             setZones(tablesData.zones);
             setTableStatuses(tablesData.tableStatuses);
             setMenu({
@@ -174,10 +196,11 @@ export function useTables() {
         }
     }, [orders, tables, persistTables]);
 
-    const startOrder = (tableId: string) => {
+    const startOrder = (tableId: string, guestCount: number) => {
         const newOrder: TableOrder = {
             id: `order-${Date.now()}`,
             tableId,
+            guestCount,
             items: [],
             startTime: new Date(),
             status: "active",
@@ -186,7 +209,11 @@ export function useTables() {
             total: 0,
         };
 
-        setOrders((prev) => new Map(prev).set(tableId, newOrder));
+        setOrders((prev) => {
+            const newOrders = new Map(prev);
+            newOrders.set(tableId, newOrder);
+            return newOrders;
+        });
         setSelectedTableId(tableId);
     };
 
@@ -200,6 +227,7 @@ export function useTables() {
                 const newOrder: TableOrder = {
                     id: `order-${Date.now()}`,
                     tableId,
+                    guestCount: 1, // Default to 1 guest if order is created implicitly
                     items: [item],
                     startTime: new Date(),
                     status: "active",
@@ -293,18 +321,62 @@ export function useTables() {
         updateOrderItem(tableId, itemId, 0);
     };
 
-    const completeOrder = (tableId: string) => {
-        setOrders((prev) => {
-            const newOrders = new Map(prev);
-            const order = newOrders.get(tableId);
+    const sendOrderToKitchen = async (tableId: string): Promise<boolean> => {
+        const order = orders.get(tableId);
+        const table = tables.find((t) => t.id === tableId);
 
-            if (order) {
-                // Immediately remove the order
-                newOrders.delete(tableId);
+        if (!order || !table) {
+            console.error("Order or table not found to send to kitchen");
+            return false;
+        }
+
+        const orderPayload = {
+            id: order.id,
+            tableId: order.tableId,
+            tableName: table.name,
+            guestCount: order.guestCount,
+            items: order.items,
+            subtotal: order.subtotal,
+            tax: order.tax,
+            total: order.total,
+        };
+
+        try {
+            const response = await fetch("/api/orders", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(orderPayload),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to send order to kitchen");
             }
 
-            return newOrders;
-        });
+            // Clear the local order from the POS state, as it's now managed in the Orders page
+            // Note: We are NOT changing the table status here. It remains 'occupied'.
+            // The local order is cleared so the cart becomes empty.
+            setOrders((prev) => {
+                const newOrders = new Map(prev);
+                const existingOrder = newOrders.get(tableId);
+                if (existingOrder) {
+                    // Create a new order object to ensure React detects the change
+                    const updatedOrder = {
+                        ...existingOrder,
+                        items: [],
+                        subtotal: 0,
+                        tax: 0,
+                        total: 0,
+                    };
+                    newOrders.set(tableId, updatedOrder);
+                }
+                return newOrders;
+            });
+
+            return true;
+        } catch (error) {
+            console.error("Error sending order to kitchen:", error);
+            return false;
+        }
     };
 
     const cancelOrder = (tableId: string) => {
@@ -319,13 +391,24 @@ export function useTables() {
         setSelectedTableId(table.id);
 
         // If table is available and no order exists, start a new order
-        if (table.status === "available" && !orders.has(table.id)) {
-            startOrder(table.id);
-        }
+        // Logic to open guest count modal will be in the page component
+        // if (table.status === "available" && !orders.has(table.id)) {
+        //     startOrder(table.id);
+        // }
     };
 
     const clearSelection = () => {
         setSelectedTableId(null);
+    };
+
+    const clearTable = (tableId: string) => {
+        setOrders((prev) => {
+            const newOrders = new Map(prev);
+            newOrders.delete(tableId);
+            return newOrders;
+        });
+        // The useEffect will handle updating the table status to 'available' and persisting it.
+        clearSelection();
     };
 
     return {
@@ -343,9 +426,10 @@ export function useTables() {
         addItemToOrder,
         updateOrderItem,
         removeOrderItem,
-        completeOrder,
+        sendOrderToKitchen,
         cancelOrder,
         selectTable,
         clearSelection,
+        clearTable,
     } as const;
 }

@@ -1,0 +1,186 @@
+[
+    {
+        "id": "pho-bo",
+        "sku": "SKU-PHO-BO",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 26000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "bun-bo-hue",
+        "sku": "SKU-BUN-BO",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 24000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "com-tam",
+        "sku": "SKU-COM-TA",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 22000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "banh-mi",
+        "sku": "SKU-BANH-M",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 10000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "mi-quang",
+        "sku": "SKU-MI-QUA",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 28000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "com-ga",
+        "sku": "SKU-COM-GA",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 34000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "nem-ran",
+        "sku": "SKU-NEM-RA",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 16000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "goi-cuon",
+        "sku": "SKU-GOI-CU",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 14000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "cha-ca",
+        "sku": "SKU-CHA-CA",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 32000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "banh-xeo",
+        "sku": "SKU-BANH-X",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 20000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "ca-phe-den",
+        "sku": "SKU-CA-PHE",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 8000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "ca-phe-sua",
+        "sku": "SKU-CA-PHE",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 10000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "tra-da",
+        "sku": "SKU-TRA-DA",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 4000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "nuoc-dua",
+        "sku": "SKU-NUOC-D",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 12000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "sinh-to-bo",
+        "sku": "SKU-SINH-T",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 14000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "bia-saigon",
+        "sku": "SKU-BIA-SA",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 10000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "che-ba-mau",
+        "sku": "SKU-CHE-BA",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 8000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "banh-flan",
+        "sku": "SKU-BANH-F",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 10000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "kem-dua",
+        "sku": "SKU-KEM-DU",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 12000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "trai-cay",
+        "sku": "SKU-TRAI-C",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 14000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "lau-thai",
+        "sku": "SKU-LAU-TH",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 112000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "lau-ga",
+        "sku": "SKU-LAU-GA",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 128000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    },
+    {
+        "id": "lau-bo",
+        "sku": "SKU-LAU-BO",
+        "currentStock": 100,
+        "reorderPoint": 10,
+        "unitCost": 152000,
+        "lastUpdated": "2025-11-15T03:14:41.363Z"
+    }
+]

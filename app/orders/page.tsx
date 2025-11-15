@@ -1,235 +1,225 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, Suspense, useMemo, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import { DashboardLayout } from "@/components/dashboard-layout";
-import { OrderTable, type Order } from "@/components/orders/order-table";
-import { OrderStats } from "@/components/orders/order-stats";
-import { OrderFilters } from "@/components/orders/order-filters";
+import { OrderTable } from "@/components/orders/order-table";
 import { OrderDetailsModal } from "@/components/orders/order-details-modal";
+import { PaymentModal } from "@/components/orders/payment-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Download, RefreshCw } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { Order } from "@/lib/data";
+import { Loader2 } from "lucide-react";
 
-// Sample order data
-const sampleOrders: Order[] = [
-  {
-    id: "1",
-    orderNumber: "ORD-001",
-    customerName: "John Doe",
-    customerEmail: "john@example.com",
-    items: [
-      { id: "1", name: "Premium Coffee", quantity: 2, price: 3.5 },
-      { id: "2", name: "Blueberry Muffin", quantity: 1, price: 4.25 },
-    ],
-    subtotal: 11.25,
-    tax: 0.9,
-    total: 12.15,
-    status: "completed",
-    paymentMethod: "credit card",
-    createdAt: "2024-01-15T10:30:00Z",
-    updatedAt: "2024-01-15T10:35:00Z",
-  },
-  {
-    id: "2",
-    orderNumber: "ORD-002",
-    items: [
-      { id: "3", name: "Club Sandwich", quantity: 1, price: 8.99 },
-      { id: "4", name: "Green Tea", quantity: 1, price: 2.75 },
-    ],
-    subtotal: 11.74,
-    tax: 0.94,
-    total: 12.68,
-    status: "processing",
-    paymentMethod: "cash",
-    createdAt: "2024-01-15T11:15:00Z",
-    updatedAt: "2024-01-15T11:20:00Z",
-  },
-  {
-    id: "3",
-    orderNumber: "ORD-003",
-    customerName: "Jane Smith",
-    customerEmail: "jane@example.com",
-    items: [{ id: "5", name: "Caesar Salad", quantity: 1, price: 12.5 }],
-    subtotal: 12.5,
-    tax: 1.0,
-    total: 13.5,
-    status: "pending",
-    paymentMethod: "credit card",
-    createdAt: "2024-01-15T12:00:00Z",
-    updatedAt: "2024-01-15T12:00:00Z",
-  },
-  {
-    id: "4",
-    orderNumber: "ORD-004",
-    items: [
-      { id: "1", name: "Premium Coffee", quantity: 1, price: 3.5 },
-      { id: "2", name: "Blueberry Muffin", quantity: 2, price: 4.25 },
-    ],
-    subtotal: 12.0,
-    tax: 0.96,
-    total: 12.96,
-    status: "cancelled",
-    paymentMethod: "cash",
-    createdAt: "2024-01-14T15:45:00Z",
-    updatedAt: "2024-01-14T16:00:00Z",
-  },
-  {
-    id: "5",
-    orderNumber: "ORD-005",
-    customerName: "Bob Wilson",
-    items: [{ id: "6", name: "Smoothie", quantity: 2, price: 6.25 }],
-    subtotal: 12.5,
-    tax: 1.0,
-    total: 13.5,
-    status: "completed",
-    paymentMethod: "credit card",
-    createdAt: "2024-01-14T09:30:00Z",
-    updatedAt: "2024-01-14T09:35:00Z",
-  },
-];
+function OrdersContent() {
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const { toast } = useToast();
+    const searchParams = useSearchParams();
+    const highlightId = searchParams.get("highlight");
+
+    const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+    const fetchOrders = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            const res = await fetch("/api/orders");
+            const data: Order[] = await res.json();
+            data.sort(
+                (a, b) =>
+                    new Date(b.startTime).getTime() -
+                    new Date(a.startTime).getTime()
+            );
+            setOrders(data);
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Could not fetch orders.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    }, [toast]);
+
+    useEffect(() => {
+        fetchOrders();
+    }, [fetchOrders]);
+
+    const handleUpdateStatus = async (
+        orderId: string,
+        status: Order["status"]
+    ) => {
+        try {
+            await fetch("/api/orders", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: orderId, status }),
+            });
+            toast({
+                title: "Success",
+                description: `Order ${orderId.substring(
+                    0,
+                    7
+                )} marked as ${status}.`,
+            });
+            fetchOrders();
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Failed to update order status.",
+                variant: "destructive",
+            });
+        }
+    };
+
+    const handleOpenPaymentModal = (order: Order) => {
+        setSelectedOrder(order);
+        setIsPaymentModalOpen(true);
+    };
+
+    const handleConfirmPayment = async (
+        orderId: string,
+        paymentMethod: string
+    ) => {
+        try {
+            const response = await fetch("/api/orders", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: orderId,
+                    status: "completed",
+                    paymentMethod,
+                }),
+            });
+
+            if (!response.ok) throw new Error("Failed to complete payment");
+
+            // Deduct inventory
+            const order = orders.find((o) => o.id === orderId);
+            if (order) {
+                const inventoryUpdates = order.items.map((item) => ({
+                    id: item.id,
+                    change: -item.quantity,
+                }));
+                await fetch("/api/inventory", {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(inventoryUpdates),
+                });
+            }
+
+            toast({
+                title: "Success",
+                description: `Payment for order ${orderId.substring(
+                    0,
+                    7
+                )} confirmed.`,
+            });
+            fetchOrders();
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Failed to confirm payment.",
+                variant: "destructive",
+            });
+        }
+    };
+
+    const handleViewOrder = (order: Order) => {
+        setSelectedOrder(order);
+        setIsDetailsModalOpen(true);
+    };
+
+    const filteredOrders = useMemo(() => {
+        const pending = orders.filter((o) => o.status === "pending");
+        const processing = orders.filter((o) => o.status === "processing");
+        const completed = orders.filter((o) => o.status === "completed");
+        return { pending, processing, completed };
+    }, [orders]);
+
+    if (isLoading) {
+        return (
+            <div className="h-full flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        );
+    }
+
+    return (
+        <div className="p-6 space-y-6">
+            <Tabs defaultValue="pending">
+                <TabsList>
+                    <TabsTrigger value="pending">
+                        Bếp ({filteredOrders.pending.length})
+                    </TabsTrigger>
+                    <TabsTrigger value="processing">
+                        Đang xử lý ({filteredOrders.processing.length})
+                    </TabsTrigger>
+                    <TabsTrigger value="completed">
+                        Đã hoàn thành ({filteredOrders.completed.length})
+                    </TabsTrigger>
+                </TabsList>
+                <TabsContent value="pending">
+                    <OrderTable
+                        orders={filteredOrders.pending}
+                        onUpdateStatus={handleUpdateStatus}
+                        onViewOrder={handleViewOrder}
+                        onPay={handleOpenPaymentModal}
+                        highlightId={highlightId}
+                    />
+                </TabsContent>
+                <TabsContent value="processing">
+                    <OrderTable
+                        orders={filteredOrders.processing}
+                        onUpdateStatus={handleUpdateStatus}
+                        onViewOrder={handleViewOrder}
+                        onPay={handleOpenPaymentModal}
+                        highlightId={highlightId}
+                    />
+                </TabsContent>
+                <TabsContent value="completed">
+                    <OrderTable
+                        orders={filteredOrders.completed}
+                        onUpdateStatus={handleUpdateStatus}
+                        onViewOrder={handleViewOrder}
+                        onPay={handleOpenPaymentModal}
+                        highlightId={highlightId}
+                    />
+                </TabsContent>
+            </Tabs>
+
+            <OrderDetailsModal
+                isOpen={isDetailsModalOpen}
+                onClose={() => setIsDetailsModalOpen(false)}
+                order={selectedOrder}
+                onPrintReceipt={() => {}}
+            />
+            <PaymentModal
+                isOpen={isPaymentModalOpen}
+                onClose={() => setIsPaymentModalOpen(false)}
+                order={selectedOrder}
+                onConfirmPayment={handleConfirmPayment}
+            />
+        </div>
+    );
+}
 
 export default function OrdersPage() {
-  const [orders, setOrders] = useState<Order[]>(sampleOrders);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All Status");
-  const [dateFilter, setDateFilter] = useState("All Time");
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const { toast } = useToast();
-
-  const filteredOrders = useMemo(() => {
-    return orders.filter((order) => {
-      const matchesSearch =
-        order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.customerEmail?.toLowerCase().includes(searchTerm.toLowerCase());
-
-      const matchesStatus =
-        statusFilter === "All Status" || order.status === statusFilter;
-
-      // Simple date filtering - in a real app, you'd implement proper date range logic
-      let matchesDate = true;
-      if (dateFilter === "Today") {
-        const today = new Date().toDateString();
-        matchesDate = new Date(order.createdAt).toDateString() === today;
-      }
-
-      return matchesSearch && matchesStatus && matchesDate;
-    });
-  }, [orders, searchTerm, statusFilter, dateFilter]);
-
-  const handleViewOrder = (order: Order) => {
-    setSelectedOrder(order);
-    setIsDetailsModalOpen(true);
-  };
-
-  const handleUpdateStatus = (orderId: string, status: Order["status"]) => {
-    setOrders((orders) =>
-      orders.map((order) =>
-        order.id === orderId
-          ? {
-              ...order,
-              status,
-              updatedAt: new Date().toISOString(),
-            }
-          : order,
-      ),
+    return (
+        <DashboardLayout>
+            <Suspense
+                fallback={
+                    <div className="flex items-center justify-center h-full">
+                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    </div>
+                }
+            >
+                <OrdersContent />
+            </Suspense>
+        </DashboardLayout>
     );
-
-    toast({
-      title: "Order updated",
-      description: `Order status changed to ${status}`,
-    });
-  };
-
-  const handlePrintReceipt = (order: Order) => {
-    toast({
-      title: "Printing receipt",
-      description: `Receipt for order ${order.orderNumber} sent to printer`,
-    });
-  };
-
-  const handleClearFilters = () => {
-    setSearchTerm("");
-    setStatusFilter("All Status");
-    setDateFilter("All Time");
-  };
-
-  const handleExport = () => {
-    toast({
-      title: "Exporting orders",
-      description: "Order data exported to CSV",
-    });
-  };
-
-  const handleRefresh = () => {
-    toast({
-      title: "Refreshing orders",
-      description: "Order data refreshed",
-    });
-  };
-
-  return (
-    <DashboardLayout>
-      <div className="p-6 space-y-6">
-        {/*<div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold">Order Management</h1>
-            <p className="text-muted-foreground">Track and manage customer orders</p>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={handleRefresh}>
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Refresh
-            </Button>
-            <Button variant="outline" onClick={handleExport}>
-              <Download className="h-4 w-4 mr-2" />
-              Export
-            </Button>
-          </div>
-        </div>*/}
-
-        {/*<OrderStats orders={orders} />*/}
-
-        {/*<Card>
-          <CardHeader>
-            <CardTitle>Order Filters</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <OrderFilters
-              searchTerm={searchTerm}
-              onSearchChange={setSearchTerm}
-              statusFilter={statusFilter}
-              onStatusChange={setStatusFilter}
-              dateFilter={dateFilter}
-              onDateChange={setDateFilter}
-              onClearFilters={handleClearFilters}
-            />
-          </CardContent>
-        </Card>*/}
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Orders ({filteredOrders.length})</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <OrderTable
-              orders={filteredOrders}
-              onViewOrder={handleViewOrder}
-              onUpdateStatus={handleUpdateStatus}
-              onPrintReceipt={handlePrintReceipt}
-            />
-          </CardContent>
-        </Card>
-
-        <OrderDetailsModal
-          isOpen={isDetailsModalOpen}
-          onClose={() => setIsDetailsModalOpen(false)}
-          order={selectedOrder}
-          onPrintReceipt={handlePrintReceipt}
-        />
-      </div>
-    </DashboardLayout>
-  );
 }

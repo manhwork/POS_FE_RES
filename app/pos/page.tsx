@@ -1,10 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { ProductGrid } from "@/components/pos/product-grid";
 import { Cart, type CartItem } from "@/components/pos/cart";
 import { TableGrid } from "@/components/pos/table-grid";
+import { GuestCountModal } from "@/components/pos/guest-count-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +14,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { useToast } from "@/hooks/use-toast";
 import { useTables } from "@/hooks/use-tables";
 import { ArrowLeft, Users, Clock, Loader2 } from "lucide-react";
-import { Product, formatCurrency, formatTime } from "@/lib/data";
+import { Product, Table, formatCurrency, formatTime } from "@/lib/data";
 
 export default function POSPage() {
     const {
@@ -22,17 +24,42 @@ export default function POSPage() {
         menu,
         selectedTable,
         selectedOrder,
+        selectedTableId,
         isLoading,
         selectTable,
         clearSelection,
         addItemToOrder,
         updateOrderItem,
         removeOrderItem,
-        completeOrder,
+        startOrder,
+        sendOrderToKitchen,
+        clearTable,
     } = useTables();
 
+    const [isGuestModalOpen, setGuestModalOpen] = useState(false);
+    const [tableForGuestModal, setTableForGuestModal] = useState<Table | null>(
+        null
+    );
     const { t } = useLanguage();
     const { toast } = useToast();
+    const router = useRouter();
+
+    const handleTableSelect = (table: Table) => {
+        if (table.status === "available") {
+            setTableForGuestModal(table);
+            setGuestModalOpen(true);
+        } else {
+            selectTable(table);
+        }
+    };
+
+    const handleGuestSubmit = (guestCount: number) => {
+        if (tableForGuestModal) {
+            startOrder(tableForGuestModal.id, guestCount);
+            setGuestModalOpen(false);
+            setTableForGuestModal(null);
+        }
+    };
 
     const handleProductSelect = (product: Product) => {
         if (!selectedTable) return;
@@ -58,24 +85,6 @@ export default function POSPage() {
     const handleRemoveItem = (id: string) => {
         if (!selectedTable) return;
         removeOrderItem(selectedTable.id, id);
-    };
-
-    const handleCheckout = () => {
-        if (
-            !selectedTable ||
-            !selectedOrder ||
-            selectedOrder.items.length === 0
-        )
-            return;
-
-        completeOrder(selectedTable.id);
-        toast({
-            title: "Thanh toán thành công",
-            description: `${selectedTable.name} - ${formatCurrency(
-                selectedOrder.total
-            )}`,
-        });
-        clearSelection();
     };
 
     const cartItems: CartItem[] = selectedOrder
@@ -113,7 +122,7 @@ export default function POSPage() {
                                 Quay lại
                             </Button>
                         )}
-                        <div>
+                        <div className="flex-1">
                             <h1 className="text-2xl font-bold mb-2">
                                 {selectedTable
                                     ? `${selectedTable.name}`
@@ -124,7 +133,9 @@ export default function POSPage() {
                                     <div className="flex items-center gap-1">
                                         <Users className="h-4 w-4" />
                                         <span>
-                                            {selectedTable.capacity} chỗ ngồi
+                                            {selectedOrder?.guestCount ||
+                                                selectedTable.capacity}{" "}
+                                            khách
                                         </span>
                                     </div>
                                     {selectedOrder && (
@@ -152,6 +163,14 @@ export default function POSPage() {
                                 </div>
                             )}
                         </div>
+                        {selectedTable &&
+                            selectedTable.status === "occupied" && (
+                                <Button
+                                    onClick={() => clearTable(selectedTable.id)}
+                                >
+                                    Dọn bàn
+                                </Button>
+                            )}
                     </div>
                 </div>
 
@@ -178,7 +197,7 @@ export default function POSPage() {
                                         zones={zones}
                                         tableStatuses={tableStatuses}
                                         selectedTableId={null}
-                                        onTableSelect={selectTable}
+                                        onTableSelect={handleTableSelect}
                                     />
                                 )}
                             </CardContent>
@@ -191,12 +210,22 @@ export default function POSPage() {
                                 items={cartItems}
                                 onUpdateQuantity={handleUpdateQuantity}
                                 onRemoveItem={handleRemoveItem}
-                                onCheckout={handleCheckout}
+                                sendOrderToKitchen={sendOrderToKitchen}
+                                clearSelection={clearSelection}
+                                selectedTableId={selectedTableId}
                             />
                         </div>
                     )}
                 </div>
             </div>
+            {tableForGuestModal && (
+                <GuestCountModal
+                    isOpen={isGuestModalOpen}
+                    onClose={() => setGuestModalOpen(false)}
+                    onSubmit={handleGuestSubmit}
+                    tableName={tableForGuestModal.name}
+                />
+            )}
         </DashboardLayout>
     );
 }
