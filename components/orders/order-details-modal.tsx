@@ -59,15 +59,17 @@ export function OrderDetailsModal({
             <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
                     <DialogTitle className="flex items-center justify-between">
-                        <span>Order Details - {order.id}</span>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => onPrintReceipt(order)}
-                        >
-                            <Receipt className="h-4 w-4 mr-2" />
-                            Print Receipt
-                        </Button>
+                        <span>Order Details - {order.id.substring(0, 7)}</span>
+                        {order.status === "completed" && (
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => onPrintReceipt(order)}
+                            >
+                                <Receipt className="h-4 w-4 mr-2" />
+                                Print Receipt
+                            </Button>
+                        )}
                     </DialogTitle>
                 </DialogHeader>
 
@@ -112,7 +114,9 @@ export function OrderDetailsModal({
                             </span>
                         </div>
                         <div className="text-sm">
-                            <div>{order.tableName}</div>
+                            <div>
+                                {order.tableName} ({order.guestCount} khách)
+                            </div>
                             <div className="text-muted-foreground">
                                 Walk-in Customer
                             </div>
@@ -128,9 +132,20 @@ export function OrderDetailsModal({
                             </span>
                         </div>
                         <div className="text-sm capitalize">
-                            {order.paymentMethod}
+                            {order.paymentMethod || "N/A"}
                         </div>
                     </div>
+
+                    {order.appliedPromotionId && (
+                        <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                                <Badge variant="secondary">Khuyến mãi</Badge>
+                                <span className="text-sm font-medium">
+                                    Đã áp dụng mã: {order.appliedPromotionId}
+                                </span>
+                            </div>
+                        </div>
+                    )}
 
                     <Separator />
 

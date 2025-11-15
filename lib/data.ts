@@ -262,6 +262,7 @@ export interface Order {
     tax: number;
     total: number;
     paymentMethod?: string; // Optional until completed
+    appliedPromotionId?: string;
 }
 
 export interface InventoryItem {
@@ -271,4 +272,13 @@ export interface InventoryItem {
     reorderPoint: number;
     unitCost: number;
     lastUpdated: string; // ISO 8601 string
+}
+
+export interface Promotion {
+    id: string;
+    name: string;
+    description: string;
+    discountType: "percentage" | "fixed";
+    discountValue: number;
+    applicableCustomers: string[]; // Array of phone numbers
 }

@@ -65,9 +65,9 @@ export function OrderTable({
                 <TableHeader>
                     <TableRow>
                         <TableHead>Order #</TableHead>
-                        <TableHead>Customer</TableHead>
-                        <TableHead>Items</TableHead>
-                        <TableHead>Total</TableHead>
+                        <TableHead>Bàn/Khách</TableHead>
+                        <TableHead>Món ăn</TableHead>
+                        <TableHead>Tổng cộng</TableHead>
                         <TableHead>Payment</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Date</TableHead>
@@ -98,31 +98,28 @@ export function OrderTable({
                                 <TableCell>
                                     <div>
                                         <div className="font-medium">
-                                            {order.tableName}
+                                            {order.tableName} (
+                                            {order.guestCount} khách)
                                         </div>
                                         <div className="text-sm text-muted-foreground">
-                                            Walk-in Customer
+                                            Order ID: {order.id.substring(0, 7)}
                                         </div>
                                     </div>
                                 </TableCell>
                                 <TableCell>
-                                    <div className="text-sm">
-                                        {order.items.length} item
-                                        {order.items.length !== 1 ? "s" : ""}
-                                    </div>
-                                    <div className="text-xs text-muted-foreground">
-                                        {order.items
-                                            .slice(0, 2)
-                                            .map((item) => item.name)
-                                            .join(", ")}
-                                        {order.items.length > 2 && "..."}
-                                    </div>
+                                    <ul className="list-disc list-inside text-sm text-muted-foreground">
+                                        {order.items.map((item) => (
+                                            <li key={item.id}>
+                                                {item.name} x {item.quantity}
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </TableCell>
                                 <TableCell className="font-medium">
                                     ${order.total.toFixed(2)}
                                 </TableCell>
                                 <TableCell className="capitalize">
-                                    {order.paymentMethod}
+                                    {order.paymentMethod || "N/A"}
                                 </TableCell>
                                 <TableCell>
                                     {getStatusBadge(order.status)}

@@ -83,7 +83,9 @@ function OrdersContent() {
 
     const handleConfirmPayment = async (
         orderId: string,
-        paymentMethod: string
+        paymentMethod: string,
+        finalTotal: number,
+        appliedPromotionId?: string
     ) => {
         try {
             const response = await fetch("/api/orders", {
@@ -93,6 +95,8 @@ function OrdersContent() {
                     id: orderId,
                     status: "completed",
                     paymentMethod,
+                    total: finalTotal,
+                    appliedPromotionId,
                 }),
             });
 

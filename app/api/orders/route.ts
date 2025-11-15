@@ -73,7 +73,8 @@ export async function POST(request: Request) {
  */
 export async function PATCH(request: Request) {
     try {
-        const { id, status, paymentMethod } = await request.json();
+        const { id, status, paymentMethod, total, appliedPromotionId } =
+            await request.json();
         if (!id || !status) {
             return NextResponse.json(
                 { message: "Missing order ID or status." },
@@ -96,6 +97,12 @@ export async function PATCH(request: Request) {
             orders[orderIndex].endTime = new Date().toISOString();
             if (paymentMethod) {
                 orders[orderIndex].paymentMethod = paymentMethod;
+            }
+            if (total !== undefined) {
+                orders[orderIndex].total = total;
+            }
+            if (appliedPromotionId) {
+                orders[orderIndex].appliedPromotionId = appliedPromotionId;
             }
         }
 
