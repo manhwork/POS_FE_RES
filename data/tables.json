@@ -12,8 +12,8 @@
       "zone": "indoor",
       "description": "Bàn 2 người gần cửa sổ",
       "currentOrder": {
-        "id": "order-1763176805527",
-        "startTime": "2025-11-15T03:20:05.527Z",
+        "id": "order-1763197056381",
+        "startTime": "2025-11-15T08:57:36.381Z",
         "totalAmount": 0,
         "itemCount": 0
       }
@@ -22,43 +22,31 @@
       "id": "table-2",
       "name": "Bàn 2",
       "capacity": 4,
-      "status": "occupied",
+      "status": "available",
       "position": {
         "x": 2,
         "y": 1
       },
       "zone": "indoor",
-      "description": "Bàn 4 người trung tâm",
-      "currentOrder": {
-        "id": "order-1763181132152",
-        "startTime": "2025-11-15T04:32:12.152Z",
-        "totalAmount": 0,
-        "itemCount": 0
-      }
+      "description": "Bàn 4 người trung tâm"
     },
     {
       "id": "table-3",
       "name": "Bàn 3",
       "capacity": 2,
-      "status": "occupied",
+      "status": "available",
       "position": {
         "x": 3,
         "y": 1
       },
       "zone": "indoor",
-      "description": "Bàn 2 người gần bar",
-      "currentOrder": {
-        "id": "order-1763176441712",
-        "startTime": "2025-11-15T03:14:01.712Z",
-        "totalAmount": 0,
-        "itemCount": 0
-      }
+      "description": "Bàn 2 người gần bar"
     },
     {
       "id": "table-4",
       "name": "Bàn 4",
       "capacity": 6,
-      "status": "reserved",
+      "status": "available",
       "position": {
         "x": 1,
         "y": 2
@@ -88,37 +76,25 @@
       "id": "table-6",
       "name": "Bàn 6",
       "capacity": 2,
-      "status": "occupied",
+      "status": "available",
       "position": {
         "x": 3,
         "y": 2
       },
       "zone": "indoor",
-      "description": "Bàn 2 người góc",
-      "currentOrder": {
-        "id": "order-1763181489871",
-        "startTime": "2025-11-15T04:38:09.871Z",
-        "totalAmount": 0,
-        "itemCount": 0
-      }
+      "description": "Bàn 2 người góc"
     },
     {
       "id": "table-7",
       "name": "Bàn 7",
       "capacity": 4,
-      "status": "occupied",
+      "status": "available",
       "position": {
         "x": 1,
         "y": 3
       },
       "zone": "outdoor",
-      "description": "Bàn 4 người sân thượng",
-      "currentOrder": {
-        "id": "order-1763181651046",
-        "startTime": "2025-11-15T04:40:51.046Z",
-        "totalAmount": 0,
-        "itemCount": 0
-      }
+      "description": "Bàn 4 người sân thượng"
     },
     {
       "id": "table-8",
@@ -172,7 +148,7 @@
       "id": "table-12",
       "name": "Bàn 12",
       "capacity": 10,
-      "status": "reserved",
+      "status": "available",
       "position": {
         "x": 3,
         "y": 4

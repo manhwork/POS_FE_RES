@@ -116,8 +116,10 @@
     "subtotal": 180000,
     "tax": 18000,
     "total": 198000,
-    "status": "processing",
-    "startTime": "2025-11-15T04:32:19.090Z"
+    "status": "completed",
+    "startTime": "2025-11-15T04:32:19.090Z",
+    "endTime": "2025-11-15T08:52:23.495Z",
+    "paymentMethod": "cash"
   },
   {
     "id": "order-1763181489871",
@@ -135,8 +137,9 @@
     "subtotal": 100000,
     "tax": 10000,
     "total": 110000,
-    "status": "pending",
-    "startTime": "2025-11-15T04:38:14.913Z"
+    "status": "completed",
+    "startTime": "2025-11-15T04:38:14.913Z",
+    "endTime": "2025-11-15T08:56:56.813Z"
   },
   {
     "id": "order-1763181651046",
@@ -154,7 +157,36 @@
     "subtotal": 105000,
     "tax": 10500,
     "total": 115500,
-    "status": "processing",
-    "startTime": "2025-11-15T04:40:55.807Z"
+    "status": "completed",
+    "startTime": "2025-11-15T04:40:55.807Z",
+    "endTime": "2025-11-15T08:52:01.405Z"
+  },
+  {
+    "id": "order-1763197056381",
+    "tableId": "table-1",
+    "tableName": "Bàn 1",
+    "guestCount": 2,
+    "items": [
+      {
+        "id": "nem-ran",
+        "name": "Nem Rán",
+        "price": 40000,
+        "quantity": 1
+      },
+      {
+        "id": "goi-cuon",
+        "name": "Gỏi Cuốn",
+        "price": 35000,
+        "quantity": 3
+      }
+    ],
+    "subtotal": 145000,
+    "tax": 14500,
+    "total": 143550,
+    "status": "completed",
+    "startTime": "2025-11-15T08:57:43.129Z",
+    "endTime": "2025-11-15T08:58:20.104Z",
+    "paymentMethod": "cash",
+    "appliedPromotionId": "PROMO-10-PERCENT"
   }
 ]

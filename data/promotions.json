@@ -1,18 +1,23 @@
 [
-    {
-        "id": "PROMO-10-PERCENT",
-        "name": "Giảm giá 10% cho khách hàng thân thiết",
-        "description": "Giảm giá 10% trên tổng hóa đơn cho các số điện thoại được chỉ định.",
-        "discountType": "percentage",
-        "discountValue": 10,
-        "applicableCustomers": ["0343200000", "0909123456"]
-    },
-    {
-        "id": "PROMO-50K",
-        "name": "Giảm 50.000đ",
-        "description": "Giảm 50.000đ cho khách hàng VIP.",
-        "discountType": "fixed",
-        "discountValue": 50000,
-        "applicableCustomers": ["0987654321"]
-    }
+  {
+    "id": "PROMO-10-PERCENT",
+    "name": "Giảm giá 10% cho khách hàng thân thiết",
+    "description": "",
+    "discountType": "percentage",
+    "discountValue": 10,
+    "applicableCustomers": [
+      "0343200000",
+      "0909123456"
+    ]
+  },
+  {
+    "id": "PROMO-50K",
+    "name": "Giảm 50.000đ",
+    "description": "",
+    "discountType": "fixed",
+    "discountValue": 50000,
+    "applicableCustomers": [
+      "0987654321"
+    ]
+  }
 ]
