@@ -44,8 +44,16 @@
       "price": 65000,
       "categoryId": "main-dishes",
       "image": "/images/pho-bo.jpg",
-      "ingredients": ["Bánh phở", "Thịt bò", "Hành lá", "Ngò gai", "Giá đỗ"],
-      "allergens": ["Gluten"],
+      "ingredients": [
+        "Bánh phở",
+        "Thịt bò",
+        "Hành lá",
+        "Ngò gai",
+        "Giá đỗ"
+      ],
+      "allergens": [
+        "Gluten"
+      ],
       "isAvailable": true,
       "preparationTime": 15,
       "isSpicy": false,
@@ -58,12 +66,18 @@
     },
     {
       "id": "bun-bo-hue",
-      "name": "Bún Bò Huế",
+      "name": "Bún Bò Huế ",
       "description": "Bún bò Huế cay nồng với chả, giò heo",
       "price": 60000,
       "categoryId": "main-dishes",
       "image": "/images/bun-bo-hue.jpg",
-      "ingredients": ["Bún", "Thịt bò", "Chả", "Giò heo", "Sả"],
+      "ingredients": [
+        "Bún",
+        "Thịt bò",
+        "Chả",
+        "Giò heo",
+        "Sả"
+      ],
       "allergens": [],
       "isAvailable": true,
       "preparationTime": 18,
@@ -82,8 +96,16 @@
       "price": 55000,
       "categoryId": "main-dishes",
       "image": "/images/com-tam.jpg",
-      "ingredients": ["Cơm tấm", "Sườn nướng", "Chả trứng", "Bì", "Nước mắm"],
-      "allergens": ["Eggs"],
+      "ingredients": [
+        "Cơm tấm",
+        "Sườn nướng",
+        "Chả trứng",
+        "Bì",
+        "Nước mắm"
+      ],
+      "allergens": [
+        "Eggs"
+      ],
       "isAvailable": true,
       "preparationTime": 20,
       "isSpicy": false,
@@ -101,8 +123,16 @@
       "price": 25000,
       "categoryId": "main-dishes",
       "image": "/images/banh-mi.jpg",
-      "ingredients": ["Bánh mì", "Thịt nướng", "Pate", "Rau sống", "Đồ chua"],
-      "allergens": ["Gluten"],
+      "ingredients": [
+        "Bánh mì",
+        "Thịt nướng",
+        "Pate",
+        "Rau sống",
+        "Đồ chua"
+      ],
+      "allergens": [
+        "Gluten"
+      ],
       "isAvailable": true,
       "preparationTime": 8,
       "isSpicy": false,
@@ -120,8 +150,18 @@
       "price": 70000,
       "categoryId": "main-dishes",
       "image": "/images/mi-quang.jpg",
-      "ingredients": ["Mì quảng", "Tôm", "Thịt heo", "Trứng cút", "Bánh tráng"],
-      "allergens": ["Gluten", "Shellfish", "Eggs"],
+      "ingredients": [
+        "Mì quảng",
+        "Tôm",
+        "Thịt heo",
+        "Trứng cút",
+        "Bánh tráng"
+      ],
+      "allergens": [
+        "Gluten",
+        "Shellfish",
+        "Eggs"
+      ],
       "isAvailable": true,
       "preparationTime": 25,
       "isSpicy": false,
@@ -139,7 +179,13 @@
       "price": 85000,
       "categoryId": "main-dishes",
       "image": "/images/com-ga.jpg",
-      "ingredients": ["Cơm", "Gà hấp", "Gừng", "Hành lá", "Nước mắm"],
+      "ingredients": [
+        "Cơm",
+        "Gà hấp",
+        "Gừng",
+        "Hành lá",
+        "Nước mắm"
+      ],
       "allergens": [],
       "isAvailable": true,
       "preparationTime": 30,
@@ -158,8 +204,16 @@
       "price": 40000,
       "categoryId": "appetizers",
       "image": "/images/nem-ran.jpg",
-      "ingredients": ["Bánh tráng", "Thịt heo", "Tôm", "Miến", "Nấm"],
-      "allergens": ["Shellfish"],
+      "ingredients": [
+        "Bánh tráng",
+        "Thịt heo",
+        "Tôm",
+        "Miến",
+        "Nấm"
+      ],
+      "allergens": [
+        "Shellfish"
+      ],
       "isAvailable": true,
       "preparationTime": 12,
       "isSpicy": false,
@@ -177,8 +231,16 @@
       "price": 35000,
       "categoryId": "appetizers",
       "image": "/images/goi-cuon.jpg",
-      "ingredients": ["Bánh tráng", "Tôm", "Thịt heo", "Bún", "Rau sống"],
-      "allergens": ["Shellfish"],
+      "ingredients": [
+        "Bánh tráng",
+        "Tôm",
+        "Thịt heo",
+        "Bún",
+        "Rau sống"
+      ],
+      "allergens": [
+        "Shellfish"
+      ],
       "isAvailable": true,
       "preparationTime": 10,
       "isSpicy": false,
@@ -196,8 +258,16 @@
       "price": 80000,
       "categoryId": "appetizers",
       "image": "/images/cha-ca.jpg",
-      "ingredients": ["Cá tra", "Thì là", "Hành", "Bún", "Nước mắm"],
-      "allergens": ["Fish"],
+      "ingredients": [
+        "Cá tra",
+        "Thì là",
+        "Hành",
+        "Bún",
+        "Nước mắm"
+      ],
+      "allergens": [
+        "Fish"
+      ],
       "isAvailable": true,
       "preparationTime": 20,
       "isSpicy": false,
@@ -215,8 +285,16 @@
       "price": 50000,
       "categoryId": "appetizers",
       "image": "/images/banh-xeo.jpg",
-      "ingredients": ["Bột gạo", "Tôm", "Thịt ba chỉ", "Giá đỗ", "Rau sống"],
-      "allergens": ["Shellfish"],
+      "ingredients": [
+        "Bột gạo",
+        "Tôm",
+        "Thịt ba chỉ",
+        "Giá đỗ",
+        "Rau sống"
+      ],
+      "allergens": [
+        "Shellfish"
+      ],
       "isAvailable": true,
       "preparationTime": 15,
       "isSpicy": false,
@@ -234,7 +312,9 @@
       "price": 20000,
       "categoryId": "beverages",
       "image": "/images/ca-phe-den.jpg",
-      "ingredients": ["Cà phê robusta"],
+      "ingredients": [
+        "Cà phê robusta"
+      ],
       "allergens": [],
       "isAvailable": true,
       "preparationTime": 5,
@@ -253,8 +333,13 @@
       "price": 25000,
       "categoryId": "beverages",
       "image": "/images/ca-phe-sua.jpg",
-      "ingredients": ["Cà phê robusta", "Sữa đặc"],
-      "allergens": ["Dairy"],
+      "ingredients": [
+        "Cà phê robusta",
+        "Sữa đặc"
+      ],
+      "allergens": [
+        "Dairy"
+      ],
       "isAvailable": true,
       "preparationTime": 5,
       "isSpicy": false,
@@ -272,7 +357,10 @@
       "price": 10000,
       "categoryId": "beverages",
       "image": "/images/tra-da.jpg",
-      "ingredients": ["Trà xanh", "Đá"],
+      "ingredients": [
+        "Trà xanh",
+        "Đá"
+      ],
       "allergens": [],
       "isAvailable": true,
       "preparationTime": 2,
@@ -291,7 +379,9 @@
       "price": 30000,
       "categoryId": "beverages",
       "image": "/images/nuoc-dua.jpg",
-      "ingredients": ["Nước dừa tươi"],
+      "ingredients": [
+        "Nước dừa tươi"
+      ],
       "allergens": [],
       "isAvailable": true,
       "preparationTime": 3,
@@ -310,8 +400,15 @@
       "price": 35000,
       "categoryId": "beverages",
       "image": "/images/sinh-to-bo.jpg",
-      "ingredients": ["Bơ", "Sữa tươi", "Sữa đặc", "Đá"],
-      "allergens": ["Dairy"],
+      "ingredients": [
+        "Bơ",
+        "Sữa tươi",
+        "Sữa đặc",
+        "Đá"
+      ],
+      "allergens": [
+        "Dairy"
+      ],
       "isAvailable": true,
       "preparationTime": 5,
       "isSpicy": false,
@@ -329,8 +426,12 @@
       "price": 25000,
       "categoryId": "beverages",
       "image": "/images/bia-saigon.jpg",
-      "ingredients": ["Bia Sài Gòn"],
-      "allergens": ["Gluten"],
+      "ingredients": [
+        "Bia Sài Gòn"
+      ],
+      "allergens": [
+        "Gluten"
+      ],
       "isAvailable": true,
       "preparationTime": 2,
       "isSpicy": false,
@@ -349,7 +450,12 @@
       "price": 20000,
       "categoryId": "desserts",
       "image": "/images/che-ba-mau.jpg",
-      "ingredients": ["Đậu đỏ", "Đậu xanh", "Thạch", "Nước cốt dừa"],
+      "ingredients": [
+        "Đậu đỏ",
+        "Đậu xanh",
+        "Thạch",
+        "Nước cốt dừa"
+      ],
       "allergens": [],
       "isAvailable": true,
       "preparationTime": 8,
@@ -368,8 +474,16 @@
       "price": 25000,
       "categoryId": "desserts",
       "image": "/images/banh-flan.jpg",
-      "ingredients": ["Trứng", "Sữa tươi", "Đường", "Vani"],
-      "allergens": ["Eggs", "Dairy"],
+      "ingredients": [
+        "Trứng",
+        "Sữa tươi",
+        "Đường",
+        "Vani"
+      ],
+      "allergens": [
+        "Eggs",
+        "Dairy"
+      ],
       "isAvailable": true,
       "preparationTime": 5,
       "isSpicy": false,
@@ -387,8 +501,14 @@
       "price": 30000,
       "categoryId": "desserts",
       "image": "/images/kem-dua.jpg",
-      "ingredients": ["Nước cốt dừa", "Sữa tươi", "Đường"],
-      "allergens": ["Dairy"],
+      "ingredients": [
+        "Nước cốt dừa",
+        "Sữa tươi",
+        "Đường"
+      ],
+      "allergens": [
+        "Dairy"
+      ],
       "isAvailable": true,
       "preparationTime": 3,
       "isSpicy": false,
@@ -406,7 +526,13 @@
       "price": 35000,
       "categoryId": "desserts",
       "image": "/images/trai-cay.jpg",
-      "ingredients": ["Xoài", "Dứa", "Dưa hấu", "Nho", "Kiwi"],
+      "ingredients": [
+        "Xoài",
+        "Dứa",
+        "Dưa hấu",
+        "Nho",
+        "Kiwi"
+      ],
       "allergens": [],
       "isAvailable": true,
       "preparationTime": 5,
@@ -425,8 +551,18 @@
       "price": 280000,
       "categoryId": "hot-pot",
       "image": "/images/lau-thai.jpg",
-      "ingredients": ["Tôm", "Cá", "Rau muống", "Đậu phụ", "Nấm", "Nước lẩu Thái"],
-      "allergens": ["Shellfish", "Fish"],
+      "ingredients": [
+        "Tôm",
+        "Cá",
+        "Rau muống",
+        "Đậu phụ",
+        "Nấm",
+        "Nước lẩu Thái"
+      ],
+      "allergens": [
+        "Shellfish",
+        "Fish"
+      ],
       "isAvailable": true,
       "preparationTime": 35,
       "isSpicy": true,
@@ -445,7 +581,14 @@
       "price": 320000,
       "categoryId": "hot-pot",
       "image": "/images/lau-ga.jpg",
-      "ingredients": ["Gà ta", "Lá giang", "Nấm", "Rau muống", "Miến", "Nước dùng gà"],
+      "ingredients": [
+        "Gà ta",
+        "Lá giang",
+        "Nấm",
+        "Rau muống",
+        "Miến",
+        "Nước dùng gà"
+      ],
       "allergens": [],
       "isAvailable": true,
       "preparationTime": 40,
@@ -465,7 +608,14 @@
       "price": 380000,
       "categoryId": "hot-pot",
       "image": "/images/lau-bo.jpg",
-      "ingredients": ["Thịt bò", "Bánh tráng", "Rau sống", "Dứa", "Cà chua", "Nước lẩu chua"],
+      "ingredients": [
+        "Thịt bò",
+        "Bánh tráng",
+        "Rau sống",
+        "Dứa",
+        "Cà chua",
+        "Nước lẩu chua"
+      ],
       "allergens": [],
       "isAvailable": true,
       "preparationTime": 45,
@@ -518,7 +668,9 @@
       "description": "Giảm 20% đồ uống từ 14h-16h",
       "discountType": "percentage",
       "discountValue": 20,
-      "applicableCategories": ["beverages"],
+      "applicableCategories": [
+        "beverages"
+      ],
       "startTime": "14:00",
       "endTime": "16:00",
       "isActive": true
@@ -529,8 +681,14 @@
       "description": "Phở + nước uống chỉ 75k",
       "discountType": "fixed",
       "discountValue": 10000,
-      "applicableProducts": ["pho-bo", "bun-bo-hue"],
-      "requiredProducts": ["tra-da", "ca-phe-den"],
+      "applicableProducts": [
+        "pho-bo",
+        "bun-bo-hue"
+      ],
+      "requiredProducts": [
+        "tra-da",
+        "ca-phe-den"
+      ],
       "isActive": true
     }
   ]

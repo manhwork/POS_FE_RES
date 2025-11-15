@@ -24,10 +24,10 @@
       "zone": "indoor",
       "description": "Bàn 4 người trung tâm",
       "currentOrder": {
-        "id": "order-1",
-        "startTime": "2024-11-15T09:30:00.000Z",
-        "totalAmount": 250000,
-        "itemCount": 3
+        "id": "order-1763172710585",
+        "startTime": "2025-11-15T02:11:50.585Z",
+        "totalAmount": 0,
+        "itemCount": 0
       }
     },
     {
@@ -64,25 +64,19 @@
       "id": "table-5",
       "name": "Bàn 5",
       "capacity": 4,
-      "status": "occupied",
+      "status": "available",
       "position": {
         "x": 2,
         "y": 2
       },
       "zone": "indoor",
-      "description": "Bàn 4 người VIP",
-      "currentOrder": {
-        "id": "order-2",
-        "startTime": "2024-11-15T09:15:00.000Z",
-        "totalAmount": 180000,
-        "itemCount": 2
-      }
+      "description": "Bàn 4 người VIP"
     },
     {
       "id": "table-6",
       "name": "Bàn 6",
       "capacity": 2,
-      "status": "cleaning",
+      "status": "available",
       "position": {
         "x": 3,
         "y": 2
@@ -118,19 +112,13 @@
       "id": "table-9",
       "name": "Bàn 9",
       "capacity": 2,
-      "status": "occupied",
+      "status": "available",
       "position": {
         "x": 3,
         "y": 3
       },
       "zone": "outdoor",
-      "description": "Bàn 2 người ban công",
-      "currentOrder": {
-        "id": "order-3",
-        "startTime": "2024-11-15T09:45:00.000Z",
-        "totalAmount": 320000,
-        "itemCount": 5
-      }
+      "description": "Bàn 2 người ban công"
     },
     {
       "id": "table-10",
