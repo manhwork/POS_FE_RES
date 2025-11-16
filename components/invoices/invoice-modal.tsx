@@ -60,6 +60,7 @@ export function InvoiceModal({
         status: "draft",
         items: [],
         notes: undefined,
+        paymentMethod: undefined,
     });
 
     const [items, setItems] = useState<LibInvoiceItem[]>([]);
@@ -130,6 +131,7 @@ export function InvoiceModal({
                 status: "draft",
                 items: [],
                 notes: undefined,
+                paymentMethod: undefined,
             });
             setItems([]);
             setSelectedTableId("");
@@ -723,32 +725,72 @@ export function InvoiceModal({
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="status">Trạng thái</Label>
-                        <Select
-                            value={formData.status}
-                            onValueChange={(value) =>
-                                setFormData({
-                                    ...formData,
-                                    status: value as Invoice["status"],
-                                })
-                            }
-                        >
-                            <SelectTrigger>
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="draft">Bản nháp</SelectItem>
-                                <SelectItem value="sent">Đã gửi</SelectItem>
-                                <SelectItem value="paid">
-                                    Đã thanh toán
-                                </SelectItem>
-                                <SelectItem value="overdue">Quá hạn</SelectItem>
-                                <SelectItem value="cancelled">
-                                    Đã hủy
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="status">Trạng thái</Label>
+                            <Select
+                                value={formData.status}
+                                onValueChange={(value) =>
+                                    setFormData({
+                                        ...formData,
+                                        status: value as Invoice["status"],
+                                    })
+                                }
+                            >
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="draft">
+                                        Bản nháp
+                                    </SelectItem>
+                                    <SelectItem value="sent">Đã gửi</SelectItem>
+                                    <SelectItem value="paid">
+                                        Đã thanh toán
+                                    </SelectItem>
+                                    <SelectItem value="overdue">
+                                        Quá hạn
+                                    </SelectItem>
+                                    <SelectItem value="cancelled">
+                                        Đã hủy
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="payment-method">
+                                Phương thức thanh toán
+                            </Label>
+                            <Select
+                                value={formData.paymentMethod || "none"}
+                                onValueChange={(value) =>
+                                    setFormData({
+                                        ...formData,
+                                        paymentMethod:
+                                            value === "none"
+                                                ? undefined
+                                                : value,
+                                    })
+                                }
+                            >
+                                <SelectTrigger id="payment-method">
+                                    <SelectValue placeholder="Chọn phương thức thanh toán" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="none">
+                                        -- Chưa chọn --
+                                    </SelectItem>
+                                    <SelectItem value="cash">
+                                        Tiền mặt
+                                    </SelectItem>
+                                    <SelectItem value="card">Thẻ</SelectItem>
+                                    <SelectItem value="mobile">
+                                        Chuyển khoản
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
 
                     <div className="space-y-2">
