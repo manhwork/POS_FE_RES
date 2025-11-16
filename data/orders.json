@@ -40,8 +40,11 @@
     "subtotal": 170000,
     "tax": 17000,
     "total": 187000,
-    "status": "pending",
-    "startTime": "2025-11-16T10:47:07.538Z"
+    "status": "completed",
+    "startTime": "2025-11-16T10:47:07.538Z",
+    "endTime": "2025-11-16T11:03:49.792Z",
+    "paymentMethod": "cash",
+    "invoiceId": "INV-1763291006869"
   },
   {
     "id": "order-1763285030364",
@@ -92,5 +95,24 @@
     "total": 137500,
     "status": "pending",
     "startTime": "2025-11-16T10:47:38.995Z"
+  },
+  {
+    "id": "order-1763290893920",
+    "tableId": "table-1",
+    "tableName": "Bàn 1",
+    "guestCount": 2,
+    "items": [
+      {
+        "id": "banh-mi",
+        "name": "Bánh Mì Thịt Nướng",
+        "price": 25000,
+        "quantity": 2
+      }
+    ],
+    "subtotal": 50000,
+    "tax": 5000,
+    "total": 55000,
+    "status": "pending",
+    "startTime": "2025-11-16T11:01:37.739Z"
   }
 ]

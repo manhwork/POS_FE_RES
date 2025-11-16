@@ -4,13 +4,14 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Users, Clock, MapPin } from "lucide-react";
+import { Users, Clock, MapPin, Utensils } from "lucide-react";
 import {
     Table,
     Zone,
     TableStatus,
     formatCurrency,
     formatTime,
+    Order,
 } from "@/lib/data";
 
 export { type Table } from "@/lib/data";
@@ -79,6 +80,27 @@ export function TableGrid({
     const [activeZone, setActiveZone] = useState<string | null>(
         selectedZone || null
     );
+    const [orders, setOrders] = useState<Order[]>([]);
+
+    // Fetch orders from API
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const response = await fetch("/api/orders");
+                if (response.ok) {
+                    const ordersData = await response.json();
+                    setOrders(ordersData);
+                }
+            } catch (error) {
+                console.error("Failed to fetch orders:", error);
+            }
+        };
+        fetchOrders();
+
+        // Refresh orders every 5 seconds to keep data up to date
+        const interval = setInterval(fetchOrders, 5000);
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         if (activeZone) {
@@ -92,6 +114,38 @@ export function TableGrid({
 
     const handleZoneSelect = (zoneId: string) => {
         setActiveZone(activeZone === zoneId ? null : zoneId);
+    };
+
+    // Calculate table statistics from orders
+    const getTableStats = (tableId: string) => {
+        // Get all active orders for this table (pending/processing, not yet invoiced)
+        const tableOrders = orders.filter(
+            (order) =>
+                order.tableId === tableId &&
+                !order.invoiceId &&
+                (order.status === "pending" || order.status === "processing")
+        );
+
+        // Calculate total guest count (use the latest order's guest count)
+        const latestOrder = tableOrders.sort(
+            (a, b) =>
+                new Date(b.startTime).getTime() -
+                new Date(a.startTime).getTime()
+        )[0];
+        const guestCount = latestOrder?.guestCount || 0;
+
+        // Calculate total items ordered
+        const totalItems = tableOrders.reduce((sum, order) => {
+            return (
+                sum +
+                order.items.reduce(
+                    (itemSum, item) => itemSum + item.quantity,
+                    0
+                )
+            );
+        }, 0);
+
+        return { guestCount, totalItems, orderCount: tableOrders.length };
     };
 
     return (
@@ -173,6 +227,69 @@ export function TableGrid({
                                                 {table.capacity} chỗ ngồi
                                             </span>
                                         </div>
+
+                                        {(() => {
+                                            const stats = getTableStats(
+                                                table.id
+                                            );
+                                            const hasActiveOrders =
+                                                stats.guestCount > 0 ||
+                                                stats.totalItems > 0;
+                                            return (
+                                                <>
+                                                    <div
+                                                        className={`flex items-center gap-2 text-sm ${
+                                                            stats.guestCount > 0
+                                                                ? ""
+                                                                : "text-muted-foreground"
+                                                        }`}
+                                                    >
+                                                        <Users
+                                                            className={`h-4 w-4 ${
+                                                                stats.guestCount >
+                                                                0
+                                                                    ? "text-primary"
+                                                                    : "text-muted-foreground"
+                                                            }`}
+                                                        />
+                                                        <span
+                                                            className={
+                                                                stats.guestCount >
+                                                                0
+                                                                    ? "font-medium text-primary"
+                                                                    : ""
+                                                            }
+                                                        >
+                                                            {stats.guestCount >
+                                                            0
+                                                                ? `${stats.guestCount} người đang ngồi`
+                                                                : "Chưa có người"}
+                                                        </span>
+                                                    </div>
+                                                    {hasActiveOrders && (
+                                                        <div className="flex items-center gap-2 text-sm">
+                                                            <Utensils className="h-4 w-4 text-primary" />
+                                                            <span className="font-medium text-primary">
+                                                                {stats.totalItems >
+                                                                0
+                                                                    ? `${stats.totalItems} món đã order`
+                                                                    : "Chưa có món"}{" "}
+                                                                {stats.orderCount >
+                                                                    1 && (
+                                                                    <span className="text-xs text-muted-foreground ml-1">
+                                                                        (
+                                                                        {
+                                                                            stats.orderCount
+                                                                        }{" "}
+                                                                        đơn)
+                                                                    </span>
+                                                                )}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                </>
+                                            );
+                                        })()}
 
                                         <p className="text-xs text-muted-foreground">
                                             {table.description}

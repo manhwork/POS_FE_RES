@@ -18,29 +18,23 @@
         "note": ""
       },
       "currentOrder": {
-        "id": "order-1763290024045",
-        "startTime": "2025-11-16T10:47:04.045Z",
-        "totalAmount": 66000,
-        "itemCount": 1
+        "id": "order-1763290893920",
+        "startTime": "2025-11-16T11:01:33.920Z",
+        "totalAmount": 0,
+        "itemCount": 0
       }
     },
     {
       "id": "table-2",
       "name": "Bàn 2",
       "capacity": 4,
-      "status": "occupied",
+      "status": "available",
       "position": {
         "x": 2,
         "y": 1
       },
       "zone": "indoor",
-      "description": "Bàn 4 người trung tâm",
-      "currentOrder": {
-        "id": "order-1763285030364",
-        "startTime": "2025-11-16T09:23:50.364Z",
-        "totalAmount": 0,
-        "itemCount": 0
-      }
+      "description": "Bàn 4 người trung tâm"
     },
     {
       "id": "table-3",
