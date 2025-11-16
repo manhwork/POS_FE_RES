@@ -60,6 +60,8 @@ export function InvoiceModal({
         status: "draft",
         items: [],
         notes: undefined,
+        paymentMethod: undefined,
+        appliedPromotionId: undefined,
     });
 
     const [items, setItems] = useState<LibInvoiceItem[]>([]);
@@ -110,6 +112,10 @@ export function InvoiceModal({
                     setSelectedTableId(firstOrder.tableId);
                 }
             }
+            // Load promotion if exists
+            if (invoice.appliedPromotionId) {
+                setSelectedPromotionId(invoice.appliedPromotionId);
+            }
         } else {
             const invoiceNumber = `INV-${Date.now().toString().slice(-6)}`;
             const today = new Date().toISOString().split("T")[0];
@@ -130,6 +136,8 @@ export function InvoiceModal({
                 status: "draft",
                 items: [],
                 notes: undefined,
+                paymentMethod: undefined,
+                appliedPromotionId: undefined,
             });
             setItems([]);
             setSelectedTableId("");
@@ -300,6 +308,16 @@ export function InvoiceModal({
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        // Prevent editing paid invoices
+        if (invoice && invoice.status === "paid") {
+            toast({
+                title: "Lỗi",
+                description: "Không thể chỉnh sửa hóa đơn đã thanh toán.",
+                variant: "destructive",
+            });
+            return;
+        }
+
         // When creating new invoice, must select a table with orders
         if (!invoice && (!selectedTableId || formData.orderIds.length === 0)) {
             toast({
@@ -332,7 +350,10 @@ export function InvoiceModal({
             ...formData,
             items,
             amount: finalTotalAmount,
-            // Lưu promotion ID nếu có (có thể thêm field này vào Invoice interface nếu cần)
+            appliedPromotionId:
+                selectedPromotionId && selectedPromotionId !== "none"
+                    ? selectedPromotionId
+                    : undefined,
         });
 
         toast({
@@ -687,7 +708,9 @@ export function InvoiceModal({
                                 <div className="col-span-2">
                                     <Label>Tổng cộng</Label>
                                     <Input
-                                        value={`$${item.total.toFixed(2)}`}
+                                        value={`${item.total.toLocaleString(
+                                            "vi-VN"
+                                        )}đ`}
                                         disabled
                                     />
                                 </div>
@@ -707,48 +730,91 @@ export function InvoiceModal({
 
                         <div className="flex flex-col items-end gap-1">
                             <div className="text-sm text-muted-foreground">
-                                Tạm tính: ${totalAmount.toFixed(2)}
+                                Tạm tính: {totalAmount.toLocaleString("vi-VN")}đ
                             </div>
                             {appliedPromotion && (
                                 <div className="text-sm text-destructive">
-                                    Khuyến mãi: -$
-                                    {(totalAmount - finalTotalAmount).toFixed(
-                                        2
-                                    )}
+                                    Khuyến mãi: -
+                                    {(
+                                        totalAmount - finalTotalAmount
+                                    ).toLocaleString("vi-VN")}
+                                    đ
                                 </div>
                             )}
                             <div className="text-lg font-semibold">
-                                Tổng cộng: ${finalTotalAmount.toFixed(2)}
+                                Tổng cộng:{" "}
+                                {finalTotalAmount.toLocaleString("vi-VN")}đ
                             </div>
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="status">Trạng thái</Label>
-                        <Select
-                            value={formData.status}
-                            onValueChange={(value) =>
-                                setFormData({
-                                    ...formData,
-                                    status: value as Invoice["status"],
-                                })
-                            }
-                        >
-                            <SelectTrigger>
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="draft">Bản nháp</SelectItem>
-                                <SelectItem value="sent">Đã gửi</SelectItem>
-                                <SelectItem value="paid">
-                                    Đã thanh toán
-                                </SelectItem>
-                                <SelectItem value="overdue">Quá hạn</SelectItem>
-                                <SelectItem value="cancelled">
-                                    Đã hủy
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="status">Trạng thái</Label>
+                            <Select
+                                value={formData.status}
+                                onValueChange={(value) =>
+                                    setFormData({
+                                        ...formData,
+                                        status: value as Invoice["status"],
+                                    })
+                                }
+                                disabled={invoice && invoice.status === "paid"}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="draft">
+                                        Bản nháp
+                                    </SelectItem>
+                                    <SelectItem value="sent">Đã gửi</SelectItem>
+                                    <SelectItem value="paid">
+                                        Đã thanh toán
+                                    </SelectItem>
+                                    <SelectItem value="overdue">
+                                        Quá hạn
+                                    </SelectItem>
+                                    <SelectItem value="cancelled">
+                                        Đã hủy
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="payment-method">
+                                Phương thức thanh toán
+                            </Label>
+                            <Select
+                                value={formData.paymentMethod || "none"}
+                                onValueChange={(value) =>
+                                    setFormData({
+                                        ...formData,
+                                        paymentMethod:
+                                            value === "none"
+                                                ? undefined
+                                                : value,
+                                    })
+                                }
+                            >
+                                <SelectTrigger id="payment-method">
+                                    <SelectValue placeholder="Chọn phương thức thanh toán" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="none">
+                                        -- Chưa chọn --
+                                    </SelectItem>
+                                    <SelectItem value="cash">
+                                        Tiền mặt
+                                    </SelectItem>
+                                    <SelectItem value="card">Thẻ</SelectItem>
+                                    <SelectItem value="mobile">
+                                        Chuyển khoản
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
 
                     <div className="space-y-2">

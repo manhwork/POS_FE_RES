@@ -69,14 +69,16 @@ export function InvoiceDetailsModal({
                                         Thanh toán
                                     </Button>
                                 )}
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => onEdit(invoice)}
-                            >
-                                <Edit className="h-4 w-4 mr-2" />
-                                Edit
-                            </Button>
+                            {invoice.status !== "paid" && (
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => onEdit(invoice)}
+                                >
+                                    <Edit className="h-4 w-4 mr-2" />
+                                    Edit
+                                </Button>
+                            )}
                             <Button
                                 variant="outline"
                                 size="sm"
@@ -152,6 +154,52 @@ export function InvoiceDetailsModal({
 
                     <Separator />
 
+                    {/* Payment Information */}
+                    {(invoice.paymentMethod || invoice.appliedPromotionId) && (
+                        <>
+                            <div>
+                                <h3 className="font-semibold mb-2">
+                                    Payment Information
+                                </h3>
+                                <div className="space-y-1">
+                                    {invoice.paymentMethod && (
+                                        <div className="text-sm">
+                                            <span className="text-muted-foreground">
+                                                Phương thức thanh toán:{" "}
+                                            </span>
+                                            <span className="capitalize">
+                                                {invoice.paymentMethod ===
+                                                    "cash" && "Tiền mặt"}
+                                                {invoice.paymentMethod ===
+                                                    "card" && "Thẻ"}
+                                                {invoice.paymentMethod ===
+                                                    "mobile" && "Chuyển khoản"}
+                                                {![
+                                                    "cash",
+                                                    "card",
+                                                    "mobile",
+                                                ].includes(
+                                                    invoice.paymentMethod
+                                                ) && invoice.paymentMethod}
+                                            </span>
+                                        </div>
+                                    )}
+                                    {invoice.appliedPromotionId && (
+                                        <div className="text-sm">
+                                            <span className="text-muted-foreground">
+                                                Mã khuyến mãi:{" "}
+                                            </span>
+                                            <span>
+                                                {invoice.appliedPromotionId}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            <Separator />
+                        </>
+                    )}
+
                     {/* Invoice Items */}
                     <div>
                         <h3 className="font-semibold mb-4">Items</h3>
@@ -181,10 +229,11 @@ export function InvoiceDetailsModal({
                                         {item.quantity}
                                     </div>
                                     <div className="col-span-2 text-right">
-                                        ${item.unitPrice.toFixed(2)}
+                                        {item.unitPrice.toLocaleString("vi-VN")}
+                                        đ
                                     </div>
                                     <div className="col-span-2 text-right font-medium">
-                                        ${item.total.toFixed(2)}
+                                        {item.total.toLocaleString("vi-VN")}đ
                                     </div>
                                 </div>
                             ))}
@@ -194,7 +243,7 @@ export function InvoiceDetailsModal({
                                     Total Amount:
                                 </div>
                                 <div className="col-span-2 text-right text-lg font-bold">
-                                    ${invoice.amount.toFixed(2)}
+                                    {invoice.amount.toLocaleString("vi-VN")}đ
                                 </div>
                             </div>
                         </div>

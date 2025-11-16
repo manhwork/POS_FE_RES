@@ -136,6 +136,8 @@ export interface Invoice {
     status: "draft" | "sent" | "paid" | "overdue" | "cancelled";
     items: InvoiceItem[];
     notes?: string;
+    paymentMethod?: string; // Phương thức thanh toán
+    appliedPromotionId?: string; // Mã khuyến mãi đã áp dụng
     generatedAt: string;
 }
 

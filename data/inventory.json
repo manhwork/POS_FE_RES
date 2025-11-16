@@ -10,26 +10,26 @@
   {
     "id": "bun-bo-hue",
     "sku": "SKU-BUN-BO",
-    "currentStock": 97,
+    "currentStock": 96,
     "reorderPoint": 10,
     "unitCost": 24000,
-    "lastUpdated": "2025-11-15T08:52:23.998Z"
+    "lastUpdated": "2025-11-16T11:03:49.583Z"
   },
   {
     "id": "com-tam",
     "sku": "SKU-COM-TA",
-    "currentStock": 100,
+    "currentStock": 98,
     "reorderPoint": 10,
     "unitCost": 22000,
-    "lastUpdated": "2025-11-15T03:14:41.363Z"
+    "lastUpdated": "2025-11-16T11:03:49.583Z"
   },
   {
     "id": "banh-mi",
     "sku": "SKU-BANH-M",
-    "currentStock": 100,
+    "currentStock": 98,
     "reorderPoint": 10,
     "unitCost": 10000,
-    "lastUpdated": "2025-11-15T03:14:41.363Z"
+    "lastUpdated": "2025-11-16T11:03:49.583Z"
   },
   {
     "id": "mi-quang",
@@ -42,18 +42,18 @@
   {
     "id": "com-ga",
     "sku": "SKU-COM-GA",
-    "currentStock": 100,
+    "currentStock": 99,
     "reorderPoint": 10,
     "unitCost": 34000,
-    "lastUpdated": "2025-11-15T03:14:41.363Z"
+    "lastUpdated": "2025-11-16T11:03:49.583Z"
   },
   {
     "id": "nem-ran",
     "sku": "SKU-NEM-RA",
-    "currentStock": 99,
+    "currentStock": 98,
     "reorderPoint": 10,
     "unitCost": 16000,
-    "lastUpdated": "2025-11-15T08:58:20.778Z"
+    "lastUpdated": "2025-11-16T11:03:49.583Z"
   },
   {
     "id": "goi-cuon",

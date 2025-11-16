@@ -5,6 +5,7 @@
       "name": "Bàn 1",
       "capacity": 2,
       "status": "occupied",
+      "status": "occupied",
       "position": {
         "x": 1,
         "y": 1
