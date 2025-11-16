@@ -411,6 +411,31 @@ export function useTables() {
         clearSelection();
     };
 
+    const makeReservation = async (
+        tableId: string,
+        reservationData: {
+            customerName: string;
+            phone: string;
+            time: string;
+            note: string;
+        }
+    ) => {
+        const tableIndex = tables.findIndex((t) => t.id === tableId);
+        if (tableIndex > -1) {
+            const newTables = [...tables];
+            newTables[tableIndex].status = "reserved";
+            newTables[tableIndex].reservation = {
+                ...reservationData,
+                time: new Date(reservationData.time),
+            };
+
+            await persistTables(newTables);
+            setTables(newTables);
+            return true;
+        }
+        return false;
+    };
+
     return {
         tables,
         zones,
@@ -431,5 +456,6 @@ export function useTables() {
         selectTable,
         clearSelection,
         clearTable,
+        makeReservation,
     } as const;
 }

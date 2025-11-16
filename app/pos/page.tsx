@@ -7,6 +7,8 @@ import { ProductGrid } from "@/components/pos/product-grid";
 import { Cart, type CartItem } from "@/components/pos/cart";
 import { TableGrid } from "@/components/pos/table-grid";
 import { GuestCountModal } from "@/components/pos/guest-count-modal";
+import { OrderTypeModal } from "@/components/pos/order-type-modal";
+import { ReservationModal } from "@/components/reservation/reservation-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -34,30 +36,70 @@ export default function POSPage() {
         startOrder,
         sendOrderToKitchen,
         clearTable,
+        makeReservation,
     } = useTables();
 
     const [isGuestModalOpen, setGuestModalOpen] = useState(false);
-    const [tableForGuestModal, setTableForGuestModal] = useState<Table | null>(
-        null
-    );
+    const [isOrderTypeModalOpen, setOrderTypeModalOpen] = useState(false);
+    const [isReservationModalOpen, setReservationModalOpen] = useState(false);
+    const [tableForModal, setTableForModal] = useState<Table | null>(null);
     const { t } = useLanguage();
     const { toast } = useToast();
     const router = useRouter();
 
     const handleTableSelect = (table: Table) => {
         if (table.status === "available") {
-            setTableForGuestModal(table);
-            setGuestModalOpen(true);
+            setTableForModal(table);
+            setOrderTypeModalOpen(true);
         } else {
             selectTable(table);
         }
     };
 
+    const handleDirectOrder = () => {
+        setOrderTypeModalOpen(false);
+        setGuestModalOpen(true);
+    };
+
+    const handleOnlineReservation = () => {
+        setOrderTypeModalOpen(false);
+        setReservationModalOpen(true);
+    };
+
+    const handleReservationConfirm = async (reservationData: {
+        customerName: string;
+        phone: string;
+        time: string;
+        note: string;
+    }) => {
+        if (!tableForModal) return;
+
+        const success = await makeReservation(
+            tableForModal.id,
+            reservationData
+        );
+
+        if (success) {
+            setReservationModalOpen(false);
+            setTableForModal(null);
+            toast({
+                title: "Success",
+                description: "Reservation has been made.",
+            });
+        } else {
+            toast({
+                title: "Error",
+                description: "Failed to make reservation.",
+                variant: "destructive",
+            });
+        }
+    };
+
     const handleGuestSubmit = (guestCount: number) => {
-        if (tableForGuestModal) {
-            startOrder(tableForGuestModal.id, guestCount);
+        if (tableForModal) {
+            startOrder(tableForModal.id, guestCount);
             setGuestModalOpen(false);
-            setTableForGuestModal(null);
+            setTableForModal(null);
         }
     };
 
@@ -218,13 +260,27 @@ export default function POSPage() {
                     )}
                 </div>
             </div>
-            {tableForGuestModal && (
-                <GuestCountModal
-                    isOpen={isGuestModalOpen}
-                    onClose={() => setGuestModalOpen(false)}
-                    onSubmit={handleGuestSubmit}
-                    tableName={tableForGuestModal.name}
-                />
+            {tableForModal && (
+                <>
+                    <OrderTypeModal
+                        isOpen={isOrderTypeModalOpen}
+                        onClose={() => setOrderTypeModalOpen(false)}
+                        onDirectOrder={handleDirectOrder}
+                        onOnlineReservation={handleOnlineReservation}
+                    />
+                    <GuestCountModal
+                        isOpen={isGuestModalOpen}
+                        onClose={() => setGuestModalOpen(false)}
+                        onSubmit={handleGuestSubmit}
+                        tableName={tableForModal.name}
+                    />
+                    <ReservationModal
+                        isOpen={isReservationModalOpen}
+                        onClose={() => setReservationModalOpen(false)}
+                        onConfirm={handleReservationConfirm}
+                        table={tableForModal}
+                    />
+                </>
             )}
         </DashboardLayout>
     );

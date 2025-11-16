@@ -18,6 +18,7 @@ import {
     ChevronLeft,
     ChevronRight,
     DollarSign,
+    Calendar,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -28,11 +29,6 @@ const navigation = [
         name: "navigation.dashboard",
         href: "/",
         icon: LayoutDashboard,
-    },
-    {
-        name: "navigation.promotions",
-        href: "/promotions",
-        icon: Percent,
     },
     {
         name: "navigation.pos",
@@ -58,6 +54,11 @@ const navigation = [
         name: "navigation.orders",
         href: "/orders",
         icon: ClipboardList,
+    },
+    {
+        name: "navigation.reservations",
+        href: "/reservations",
+        icon: Calendar,
     },
     {
         name: "navigation.customers",
