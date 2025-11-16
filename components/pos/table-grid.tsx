@@ -161,6 +161,13 @@ export function TableGrid({
                                         <h3 className="font-bold text-lg">
                                             {table.name}
                                         </h3>
+                                        {table.currentOrder && (
+                                            <span className="font-medium text-primary">
+                                                {formatCurrency(
+                                                    table.currentOrder.totalAmount
+                                                )}
+                                            </span>
+                                        )}
                                         <Badge className={statusInfo.className}>
                                             {statusInfo.label}
                                         </Badge>
@@ -205,15 +212,6 @@ export function TableGrid({
                                                             table.currentOrder
                                                                 .itemCount
                                                         }
-                                                    </span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span>Tổng:</span>
-                                                    <span className="font-medium text-primary">
-                                                        {formatCurrency(
-                                                            table.currentOrder
-                                                                .totalAmount
-                                                        )}
                                                     </span>
                                                 </div>
                                             </div>

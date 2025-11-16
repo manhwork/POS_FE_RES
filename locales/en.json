@@ -38,7 +38,28 @@
         "pending": "Pending",
         "completed": "Completed",
         "cancelled": "Cancelled",
-        "processing": "Processing"
+        "processing": "Processing",
+        "min": "Minimum",
+        "optional": "Optional",
+        "notes": "Notes",
+        "notesPlaceholder": "Add any special notes or instructions",
+        "warning": "Warning",
+        "info": "Info",
+        "success": "Success",
+        "back": "Back",
+        "guests": "guests",
+        "startTime": "Start Time"
+    },
+    "tables": {
+        "status": {
+            "occupied": "Occupied",
+            "available": "Available"
+        },
+        "clear": "Clear Table"
+    },
+    "pos": {
+        "menuTitle": "Menu",
+        "selectTablePrompt": "Select a table to start"
     },
     "navigation": {
         "dashboard": "Dashboard",
@@ -395,7 +416,9 @@
         "invalidEmail": "Please enter a valid email address",
         "invalidPhone": "Please enter a valid phone number",
         "passwordTooShort": "Password must be at least 8 characters",
-        "passwordsNotMatch": "Passwords do not match"
+        "passwordsNotMatch": "Passwords do not match",
+        "reservationSuccess": "Reservation has been made.",
+        "reservationFailed": "Failed to make reservation."
     },
     "theme": {
         "toggle": "Toggle theme",
@@ -415,7 +438,7 @@
         "newCustomer": "New Customer",
         "newCustomerMessage": "{{customer}} has been added to the system",
         "paymentReceived": "Payment Received",
-        "paymentReceivedMessage": "Payment of ${{amount}} received for order {{orderId}}",
+        "paymentReceivedMessage": "Payment of {{amount}} received for order {{orderId}}",
         "inventoryUpdate": "Inventory Updated",
         "inventoryUpdateMessage": "Stock levels have been updated for {{count}} products",
         "systemMaintenance": "System Maintenance",
@@ -427,7 +450,7 @@
         "employeeClockIn": "Employee Clock In",
         "employeeClockInMessage": "{{employee}} has clocked in for their shift",
         "shiftEnded": "Shift Ended",
-        "shiftEndedMessage": "Shift ended with total sales of ${{amount}}",
+        "shiftEndedMessage": "Shift ended with total sales of {{amount}}",
         "viewDetails": "View Details",
         "dismiss": "Dismiss",
         "retry": "Retry"

@@ -4,7 +4,7 @@
       "id": "table-1",
       "name": "Bàn 1",
       "capacity": 2,
-      "status": "reserved",
+      "status": "occupied",
       "position": {
         "x": 1,
         "y": 1
@@ -16,24 +16,30 @@
         "phone": "12313",
         "time": "2025-11-16T03:45:00.000Z",
         "note": ""
+      },
+      "currentOrder": {
+        "id": "order-1763291888698",
+        "startTime": "2025-11-16T11:18:08.698Z",
+        "totalAmount": 0,
+        "itemCount": 0
       }
     },
     {
       "id": "table-2",
       "name": "Bàn 2",
       "capacity": 4,
-      "status": "occupied",
+      "status": "reserved",
       "position": {
         "x": 2,
         "y": 1
       },
       "zone": "indoor",
       "description": "Bàn 4 người trung tâm",
-      "currentOrder": {
-        "id": "order-1763285030364",
-        "startTime": "2025-11-16T09:23:50.364Z",
-        "totalAmount": 0,
-        "itemCount": 0
+      "reservation": {
+        "customerName": "Minh",
+        "phone": "0378655296",
+        "time": "2025-11-16T16:30:00.000Z",
+        "note": ""
       }
     },
     {

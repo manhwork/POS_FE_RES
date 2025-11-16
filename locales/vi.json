@@ -38,7 +38,28 @@
         "pending": "Chờ xử lý",
         "completed": "Hoàn thành",
         "cancelled": "Đã hủy",
-        "processing": "Đang xử lý"
+        "processing": "Đang xử lý",
+        "min": "Tối thiểu",
+        "optional": "Tùy chọn",
+        "notes": "Ghi chú",
+        "notesPlaceholder": "Thêm bất kỳ ghi chú hoặc hướng dẫn đặc biệt nào",
+        "warning": "Cảnh báo",
+        "info": "Thông tin",
+        "success": "Thành công",
+        "back": "Quay lại",
+        "guests": "khách",
+        "startTime": "Bắt đầu"
+    },
+    "tables": {
+        "status": {
+            "occupied": "Đang phục vụ",
+            "available": "Trống"
+        },
+        "clear": "Dọn bàn"
+    },
+    "pos": {
+        "menuTitle": "Menu món ăn",
+        "selectTablePrompt": "Chọn bàn để bắt đầu"
     },
     "navigation": {
         "dashboard": "Tổng quan",
@@ -129,6 +150,7 @@
     },
     "products": {
         "title": "Quản lý sản phẩm",
+        "description": "Quản lý danh mục sản phẩm của bạn",
         "addProduct": "Thêm sản phẩm",
         "editProduct": "Sửa sản phẩm",
         "productName": "Tên sản phẩm",
@@ -146,7 +168,22 @@
         "deleteConfirm": "Bạn có chắc chắn muốn xóa sản phẩm này?",
         "inStock": "Còn hàng",
         "outOfStock": "Hết hàng",
-        "lowStock": "Sắp hết hàng"
+        "lowStock": "Sắp hết hàng",
+        "product": "Sản phẩm",
+        "category": "Danh mục",
+        "price": "Giá",
+        "stock": "Tồn kho",
+        "status": "Trạng thái",
+        "actions": "Thao tác",
+        "available": "Có sẵn",
+        "edit": "Sửa",
+        "delete": "Xóa",
+        "noProductsFound": "Không tìm thấy sản phẩm nào",
+        "addNewProduct": "Thêm sản phẩm mới",
+        "selectCategory": "Chọn danh mục",
+        "imageURL": "URL hình ảnh",
+        "availableForSale": "Có sẵn để bán",
+        "updateProduct": "Cập nhật sản phẩm"
     },
     "inventory": {
         "title": "Quản lý kho hàng",
@@ -166,7 +203,20 @@
         "purchase": "Mua hàng",
         "return": "Trả hàng",
         "damaged": "Hư hỏng",
-        "expired": "Hết hạn"
+        "expired": "Hết hạn",
+        "product": "Sản phẩm",
+        "sku": "SKU",
+        "category": "Danh mục",
+        "currentStock": "Tồn kho",
+        "unitCost": "Giá vốn",
+        "totalValue": "Tổng giá trị",
+        "status": "Trạng thái",
+        "actions": "Thao tác",
+        "inStock": "Còn hàng",
+        "lowStock": "Sắp hết",
+        "outOfStock": "Hết hàng",
+        "adjustStock": "Điều chỉnh kho",
+        "noInventoryItems": "Không tìm thấy mặt hàng nào trong kho"
     },
     "orders": {
         "title": "Quản lý đơn hàng",
@@ -199,7 +249,21 @@
         "customerAdded": "Thêm khách hàng thành công",
         "customerUpdated": "Cập nhật khách hàng thành công",
         "customerDeleted": "Xóa khách hàng thành công",
-        "purchaseHistory": "Lịch sử mua hàng"
+        "purchaseHistory": "Lịch sử mua hàng",
+        "customer": "Khách hàng",
+        "contact": "Liên hệ",
+        "location": "Địa chỉ",
+        "orders": "Đơn hàng",
+        "status": "Trạng thái",
+        "actions": "Thao tác",
+        "viewDetails": "Xem chi tiết",
+        "edit": "Sửa",
+        "delete": "Xóa",
+        "noCustomersFound": "Không tìm thấy khách hàng",
+        "active": "Hoạt động",
+        "inactive": "Không hoạt động",
+        "notProvided": "Không cung cấp",
+        "never": "Chưa từng"
     },
     "suppliers": {
         "title": "Quản lý nhà cung cấp",
@@ -358,6 +422,7 @@
     },
     "reports": {
         "title": "Báo cáo & Phân tích",
+        "description": "Theo dõi hiệu suất kinh doanh của bạn",
         "salesReport": "Báo cáo bán hàng",
         "inventoryReport": "Báo cáo kho hàng",
         "customerReport": "Báo cáo khách hàng",
@@ -369,7 +434,35 @@
         "totalOrders": "Tổng đơn hàng",
         "averageOrderValue": "Giá trị đơn hàng trung bình",
         "topProducts": "Sản phẩm bán chạy",
-        "topCustomers": "Khách hàng VIP"
+        "topCustomers": "Khách hàng VIP",
+        "last7Days": "7 ngày qua",
+        "last30Days": "30 ngày qua",
+        "last90Days": "90 ngày qua",
+        "lastYear": "Năm qua",
+        "export": "Xuất",
+        "salesOverview": "Tổng quan doanh thu",
+        "line": "Đường",
+        "bar": "Cột",
+        "dailySales": "Doanh thu hàng ngày",
+        "quickReports": "Báo cáo nhanh",
+        "dailySalesReport": "Báo cáo doanh thu hàng ngày",
+        "productPerformance": "Hiệu suất sản phẩm",
+        "customerAnalysis": "Phân tích khách hàng",
+        "inventoryStatus": "Tình trạng kho",
+        "revenueBreakdown": "Phân tích doanh thu",
+        "cashSales": "Tiền mặt",
+        "cardSales": "Thẻ",
+        "performanceMetrics": "Chỉ số hiệu suất",
+        "avgOrderValue": "Giá trị đơn hàng TB",
+        "ordersPerDay": "Đơn hàng/ngày",
+        "customerRetention": "Giữ chân khách hàng",
+        "totalSales": "Tổng doanh thu",
+        "revenueThisPeriod": "Doanh thu kỳ này",
+        "ordersCompleted": "Đơn hàng đã hoàn thành",
+        "registeredCustomers": "Khách hàng đã đăng ký",
+        "productsInCatalog": "Sản phẩm trong danh mục",
+        "topSellingProducts": "Sản phẩm bán chạy nhất",
+        "unitsSold": "đã bán"
     },
     "settings": {
         "title": "Cài đặt",
@@ -396,7 +489,9 @@
         "invalidEmail": "Vui lòng nhập địa chỉ email hợp lệ",
         "invalidPhone": "Vui lòng nhập số điện thoại hợp lệ",
         "passwordTooShort": "Mật khẩu phải có ít nhất 8 ký tự",
-        "passwordsNotMatch": "Mật khẩu không khớp"
+        "passwordsNotMatch": "Mật khẩu không khớp",
+        "reservationSuccess": "Đặt bàn thành công.",
+        "reservationFailed": "Đặt bàn thất bại."
     },
     "theme": {
         "toggle": "Chuyển đổi giao diện",

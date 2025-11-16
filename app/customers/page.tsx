@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import {
   CustomerTable,
@@ -12,83 +12,12 @@ import { CustomerModal } from "@/components/customers/customer-modal";
 import { CustomerDetailsModal } from "@/components/customers/customer-details-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Download, Upload } from "lucide-react";
+import { Plus, Download, Upload, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-// Sample customer data
-const sampleCustomers: Customer[] = [
-  {
-    id: "CUST-001",
-    name: "John Doe",
-    email: "john@example.com",
-    phone: "(555) 123-4567",
-    address: "123 Main St",
-    city: "New York",
-    state: "NY",
-    zipCode: "10001",
-    totalOrders: 15,
-    totalSpent: 245.75,
-    lastOrderDate: "2024-01-15T10:30:00Z",
-    status: "active",
-    createdAt: "2023-06-15T09:00:00Z",
-    notes: "Regular customer, prefers coffee orders in the morning.",
-  },
-  {
-    id: "CUST-002",
-    name: "Jane Smith",
-    email: "jane@example.com",
-    phone: "(555) 987-6543",
-    city: "Los Angeles",
-    state: "CA",
-    zipCode: "90210",
-    totalOrders: 8,
-    totalSpent: 156.4,
-    lastOrderDate: "2024-01-12T14:20:00Z",
-    status: "active",
-    createdAt: "2023-08-22T11:30:00Z",
-  },
-  {
-    id: "CUST-003",
-    name: "Bob Wilson",
-    email: "bob@example.com",
-    totalOrders: 3,
-    totalSpent: 45.25,
-    lastOrderDate: "2023-12-20T16:45:00Z",
-    status: "inactive",
-    createdAt: "2023-11-10T13:15:00Z",
-    notes: "Moved to different city, may return.",
-  },
-  {
-    id: "CUST-004",
-    name: "Alice Johnson",
-    email: "alice@example.com",
-    phone: "(555) 456-7890",
-    address: "456 Oak Ave",
-    city: "Chicago",
-    state: "IL",
-    zipCode: "60601",
-    totalOrders: 22,
-    totalSpent: 387.9,
-    lastOrderDate: "2024-01-14T12:10:00Z",
-    status: "active",
-    createdAt: "2023-05-03T08:45:00Z",
-    notes: "VIP customer, always orders large quantities for office meetings.",
-  },
-  {
-    id: "CUST-005",
-    name: "Mike Brown",
-    email: "mike@example.com",
-    phone: "(555) 321-0987",
-    totalOrders: 1,
-    totalSpent: 12.5,
-    lastOrderDate: "2024-01-10T15:30:00Z",
-    status: "active",
-    createdAt: "2024-01-10T15:25:00Z",
-  },
-];
-
 export default function CustomersPage() {
-  const [customers, setCustomers] = useState<Customer[]>(sampleCustomers);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All Status");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -99,14 +28,35 @@ export default function CustomersPage() {
   );
   const { toast } = useToast();
 
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        const response = await fetch("/api/customers");
+        const data = await response.json();
+        setCustomers(data);
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Could not load customer data.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCustomers();
+  }, [toast]);
+
   const filteredCustomers = useMemo(() => {
     return customers.filter((customer) => {
       const matchesSearch =
         customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (customer.email &&
+          customer.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
         customer.id.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesStatus =
-        statusFilter === "All Status" || customer.status === statusFilter;
+        statusFilter === "All Status" ||
+        (customer.status && customer.status === statusFilter);
 
       return matchesSearch && matchesStatus;
     });
@@ -191,6 +141,16 @@ export default function CustomersPage() {
       description: "Bulk import feature coming soon",
     });
   };
+
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="h-full flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>

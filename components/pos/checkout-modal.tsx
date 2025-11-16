@@ -25,6 +25,8 @@ import { CreditCard, DollarSign, Smartphone } from "lucide-react";
 import type { CartItem } from "./cart";
 import { useTables } from "@/hooks/use-tables";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/language-context";
+import { formatCurrency } from "@/lib/data";
 
 interface CheckoutModalProps {
     isOpen: boolean;
@@ -53,6 +55,7 @@ export function CheckoutModal({
     const [amountReceived, setAmountReceived] = useState("");
     const { toast } = useToast();
     const router = useRouter();
+    const { t } = useLanguage();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -96,7 +99,7 @@ export function CheckoutModal({
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle>Complete Payment</DialogTitle>
+                    <DialogTitle>{t('pos.checkout')}</DialogTitle>
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -104,7 +107,7 @@ export function CheckoutModal({
                     <Card>
                         <CardHeader>
                             <CardTitle className="text-lg">
-                                Order Summary
+                                {t('orders.title')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -118,18 +121,17 @@ export function CheckoutModal({
                                             {item.name} x {item.quantity}
                                         </span>
                                         <span>
-                                            $
-                                            {(
+                                            {formatCurrency(
                                                 item.price * item.quantity
-                                            ).toFixed(2)}
+                                            )}
                                         </span>
                                     </div>
                                 ))}
                             </div>
                             <div className="border-t pt-2">
                                 <div className="flex justify-between font-bold text-lg">
-                                    <span>Total:</span>
-                                    <span>${total.toFixed(2)}</span>
+                                    <span>{t('pos.total')}:</span>
+                                    <span>{formatCurrency(total)}</span>
                                 </div>
                             </div>
                         </CardContent>
@@ -137,32 +139,32 @@ export function CheckoutModal({
 
                     {/* Payment Method */}
                     <div className="space-y-2">
-                        <Label htmlFor="payment-method">Payment Method *</Label>
+                        <Label htmlFor="payment-method">{t('pos.paymentMethod')} *</Label>
                         <Select
                             value={paymentMethod}
                             onValueChange={setPaymentMethod}
                             required
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder="Select payment method" />
+                                <SelectValue placeholder={t('pos.paymentMethod')} />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="cash">
                                     <div className="flex items-center gap-2">
                                         <DollarSign className="h-4 w-4" />
-                                        Cash
+                                        {t('pos.cash')}
                                     </div>
                                 </SelectItem>
                                 <SelectItem value="card">
                                     <div className="flex items-center gap-2">
                                         <CreditCard className="h-4 w-4" />
-                                        Credit/Debit Card
+                                        {t('pos.card')}
                                     </div>
                                 </SelectItem>
                                 <SelectItem value="mobile">
                                     <div className="flex items-center gap-2">
                                         <Smartphone className="h-4 w-4" />
-                                        Mobile Payment
+                                        {t('pos.mobilePayment')}
                                     </div>
                                 </SelectItem>
                             </SelectContent>
@@ -174,7 +176,7 @@ export function CheckoutModal({
                         <div className="space-y-4 p-4 bg-muted rounded-lg">
                             <div className="space-y-2">
                                 <Label htmlFor="amount-received">
-                                    Amount Received *
+                                    {t('pos.amountReceived')} *
                                 </Label>
                                 <Input
                                     id="amount-received"
@@ -185,16 +187,14 @@ export function CheckoutModal({
                                     onChange={(e) =>
                                         setAmountReceived(e.target.value)
                                     }
-                                    placeholder={`Minimum: $${total.toFixed(
-                                        2
-                                    )}`}
+                                    placeholder={`${t('common.min')}: ${formatCurrency(total)}`}
                                     required
                                 />
                             </div>
                             {amountReceived && change >= 0 && (
                                 <div className="flex justify-between text-lg font-semibold text-green-600">
-                                    <span>Change:</span>
-                                    <span>${change.toFixed(2)}</span>
+                                    <span>{t('pos.change')}:</span>
+                                    <span>{formatCurrency(change)}</span>
                                 </div>
                             )}
                         </div>
@@ -203,12 +203,12 @@ export function CheckoutModal({
                     {/* Customer Information */}
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">
-                            Customer Information (Optional)
+                            {t('pos.customerInfo')} ({t('common.optional')})
                         </h3>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="customer-name">
-                                    Customer Name
+                                    {t('pos.customerName')}
                                 </Label>
                                 <Input
                                     id="customer-name"
@@ -216,12 +216,12 @@ export function CheckoutModal({
                                     onChange={(e) =>
                                         setCustomerName(e.target.value)
                                     }
-                                    placeholder="Enter customer name"
+                                    placeholder={t('pos.customerName')}
                                 />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="customer-phone">
-                                    Phone Number
+                                    {t('pos.customerPhone')}
                                 </Label>
                                 <Input
                                     id="customer-phone"
@@ -229,13 +229,13 @@ export function CheckoutModal({
                                     onChange={(e) =>
                                         setCustomerPhone(e.target.value)
                                     }
-                                    placeholder="Enter phone number"
+                                    placeholder={t('pos.customerPhone')}
                                 />
                             </div>
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="customer-email">
-                                Email Address
+                                {t('common.email')}
                             </Label>
                             <Input
                                 id="customer-email"
@@ -244,19 +244,19 @@ export function CheckoutModal({
                                 onChange={(e) =>
                                     setCustomerEmail(e.target.value)
                                 }
-                                placeholder="Enter email address"
+                                placeholder={t('common.email')}
                             />
                         </div>
                     </div>
 
                     {/* Notes */}
                     <div className="space-y-2">
-                        <Label htmlFor="notes">Notes</Label>
+                        <Label htmlFor="notes">{t('common.notes')}</Label>
                         <Textarea
                             id="notes"
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
-                            placeholder="Add any special notes or instructions"
+                            placeholder={t('common.notesPlaceholder')}
                             rows={3}
                         />
                     </div>
@@ -269,7 +269,7 @@ export function CheckoutModal({
                             onClick={onClose}
                             className="flex-1 bg-transparent"
                         >
-                            Cancel
+                            {t('common.cancel')}
                         </Button>
                         <Button
                             type="submit"
@@ -282,7 +282,7 @@ export function CheckoutModal({
                                             total))
                             }
                         >
-                            Complete Payment - ${total.toFixed(2)}
+                            {t('pos.processPayment')} - {formatCurrency(total)}
                         </Button>
                     </div>
                 </form>

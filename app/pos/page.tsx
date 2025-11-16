@@ -83,13 +83,13 @@ export default function POSPage() {
             setReservationModalOpen(false);
             setTableForModal(null);
             toast({
-                title: "Success",
-                description: "Reservation has been made.",
+                title: t("messages.success"),
+                description: t("messages.reservationSuccess"),
             });
         } else {
             toast({
-                title: "Error",
-                description: "Failed to make reservation.",
+                title: t("messages.error"),
+                description: t("messages.reservationFailed"),
                 variant: "destructive",
             });
         }
@@ -161,14 +161,14 @@ export default function POSPage() {
                                 className="flex items-center gap-2"
                             >
                                 <ArrowLeft className="h-4 w-4" />
-                                Quay lại
+                                {t('common.back')}
                             </Button>
                         )}
                         <div className="flex-1">
                             <h1 className="text-2xl font-bold mb-2">
                                 {selectedTable
                                     ? `${selectedTable.name}`
-                                    : "Quản lý nhà hàng"}
+                                    : t('pos.title')}
                             </h1>
                             {selectedTable && (
                                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -177,14 +177,14 @@ export default function POSPage() {
                                         <span>
                                             {selectedOrder?.guestCount ||
                                                 selectedTable.capacity}{" "}
-                                            khách
+                                            {t('common.guests')}
                                         </span>
                                     </div>
                                     {selectedOrder && (
                                         <div className="flex items-center gap-1">
                                             <Clock className="h-4 w-4" />
                                             <span>
-                                                Bắt đầu:{" "}
+                                                {t('common.startTime')}:{" "}
                                                 {formatTime(
                                                     selectedOrder.startTime
                                                 )}
@@ -199,8 +199,8 @@ export default function POSPage() {
                                         }
                                     >
                                         {selectedTable.status === "occupied"
-                                            ? "Đang phục vụ"
-                                            : "Trống"}
+                                            ? t('tables.status.occupied')
+                                            : t('tables.status.available')}
                                     </Badge>
                                 </div>
                             )}
@@ -210,7 +210,7 @@ export default function POSPage() {
                                 <Button
                                     onClick={() => clearTable(selectedTable.id)}
                                 >
-                                    Dọn bàn
+                                    {t('tables.clear')}
                                 </Button>
                             )}
                     </div>
@@ -222,8 +222,8 @@ export default function POSPage() {
                             <CardHeader>
                                 <CardTitle>
                                     {selectedTable
-                                        ? "Menu món ăn"
-                                        : "Chọn bàn để bắt đầu"}
+                                        ? t('pos.menuTitle')
+                                        : t('pos.selectTablePrompt')}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="p-0">

@@ -23,7 +23,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
+import { useTranslation } from "react-i18next";
 import { DisplayInventoryItem } from "@/app/inventory/page";
 
 interface InventoryTableProps {
@@ -37,9 +37,22 @@ export function InventoryTable({
     onAdjustStock,
     onViewHistory,
 }: InventoryTableProps) {
+    const { t } = useTranslation();
+
+    const formatCurrency = (amount: number) => {
+        return new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+        }).format(amount);
+    };
+
     const getStatusBadge = (item: DisplayInventoryItem) => {
         if (item.currentStock === 0) {
-            return <Badge variant="destructive">Out of Stock</Badge>;
+            return (
+                <Badge variant="destructive">
+                    {t("inventory.outOfStock")}
+                </Badge>
+            );
         }
         if (item.currentStock <= item.reorderPoint) {
             return (
@@ -47,13 +60,13 @@ export function InventoryTable({
                     variant="secondary"
                     className="bg-yellow-100 text-yellow-800"
                 >
-                    Low Stock
+                    {t("inventory.lowStock")}
                 </Badge>
             );
         }
         return (
             <Badge variant="default" className="bg-green-100 text-green-800">
-                In Stock
+                {t("inventory.inStock")}
             </Badge>
         );
     };
@@ -63,16 +76,18 @@ export function InventoryTable({
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Product</TableHead>
-                        <TableHead>SKU</TableHead>
-                        <TableHead>Category</TableHead>
-                        <TableHead>Current Stock</TableHead>
-                        <TableHead>Reorder Point</TableHead>
-                        <TableHead>Unit Cost</TableHead>
-                        <TableHead>Total Value</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Last Updated</TableHead>
-                        <TableHead className="w-[100px]">Actions</TableHead>
+                        <TableHead>{t("inventory.product")}</TableHead>
+                        <TableHead>{t("inventory.sku")}</TableHead>
+                        <TableHead>{t("inventory.category")}</TableHead>
+                        <TableHead>{t("inventory.currentStock")}</TableHead>
+                        <TableHead>{t("inventory.reorderPoint")}</TableHead>
+                        <TableHead>{t("inventory.unitCost")}</TableHead>
+                        <TableHead>{t("inventory.totalValue")}</TableHead>
+                        <TableHead>{t("inventory.status")}</TableHead>
+                        <TableHead>{t("inventory.lastUpdated")}</TableHead>
+                        <TableHead className="w-[100px]">
+                            {t("inventory.actions")}
+                        </TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -82,7 +97,7 @@ export function InventoryTable({
                                 colSpan={10}
                                 className="text-center py-8 text-muted-foreground"
                             >
-                                No inventory items found
+                                {t("inventory.noInventoryItems")}
                             </TableCell>
                         </TableRow>
                     ) : (
@@ -114,10 +129,10 @@ export function InventoryTable({
                                 </TableCell>
                                 <TableCell>{item.reorderPoint}</TableCell>
                                 <TableCell>
-                                    ${item.unitCost.toFixed(2)}
+                                    {formatCurrency(item.unitCost)}
                                 </TableCell>
                                 <TableCell className="font-medium">
-                                    ${item.totalValue.toFixed(2)}
+                                    {formatCurrency(item.totalValue)}
                                 </TableCell>
                                 <TableCell>{getStatusBadge(item)}</TableCell>
                                 <TableCell className="text-sm text-muted-foreground">
@@ -134,7 +149,7 @@ export function InventoryTable({
                                                 onAdjustStock(item.id)
                                             }
                                         >
-                                            Adjust Stock
+                                            {t("inventory.adjustStock")}
                                         </Button>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
@@ -152,11 +167,12 @@ export function InventoryTable({
                                                     }
                                                 >
                                                     <Package className="h-4 w-4 mr-2" />
-                                                    View History
+                                                    {t("inventory.viewHistory")}
                                                 </DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </div>
+_
                                 </TableCell>
                             </TableRow>
                         ))

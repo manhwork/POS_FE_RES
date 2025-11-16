@@ -17,7 +17,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Product } from "@/lib/data";
-import { formatCurrency } from "@/lib/data";
+import { useTranslation } from "react-i18next";
 
 interface ProductTableProps {
     products: Product[];
@@ -30,17 +30,26 @@ export function ProductTable({
     onEdit,
     onDelete,
 }: ProductTableProps) {
+    const { t } = useTranslation();
+
+    const formatCurrency = (amount: number) => {
+        return new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+        }).format(amount);
+    };
+
     return (
         <div className="rounded-md border">
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Category</TableHead>
-                        <TableHead>Price</TableHead>
-                        <TableHead>Stock</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Actions</TableHead>
+                        <TableHead>{t("products.product")}</TableHead>
+                        <TableHead>{t("products.category")}</TableHead>
+                        <TableHead>{t("products.price")}</TableHead>
+                        <TableHead>{t("products.stock")}</TableHead>
+                        <TableHead>{t("products.status")}</TableHead>
+                        <TableHead>{t("products.actions")}</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -50,7 +59,7 @@ export function ProductTable({
                                 colSpan={6}
                                 className="text-center py-8 text-muted-foreground"
                             >
-                                No products found
+                                {t("products.noProductsFound")}
                             </TableCell>
                         </TableRow>
                     ) : (
@@ -65,8 +74,8 @@ export function ProductTable({
                                 </TableCell>
                                 <TableCell>
                                     {product.isAvailable
-                                        ? "In Stock"
-                                        : "Out of Stock"}
+                                        ? t("products.inStock")
+                                        : t("products.outOfStock")}
                                 </TableCell>
                                 <TableCell>
                                     <Badge
@@ -77,8 +86,8 @@ export function ProductTable({
                                         }
                                     >
                                         {product.isAvailable
-                                            ? "Available"
-                                            : "Unavailable"}
+                                            ? t("products.available")
+                                            : t("products.outOfStock")}
                                     </Badge>
                                 </TableCell>
                                 <TableCell>
@@ -93,7 +102,7 @@ export function ProductTable({
                                                 onClick={() => onEdit(product)}
                                             >
                                                 <Edit className="h-4 w-4 mr-2" />
-                                                Edit
+                                                {t("products.edit")}
                                             </DropdownMenuItem>
                                             <DropdownMenuItem
                                                 onClick={() =>
@@ -102,7 +111,7 @@ export function ProductTable({
                                                 className="text-destructive"
                                             >
                                                 <Trash2 className="h-4 w-4 mr-2" />
-                                                Delete
+                                                {t("products.delete")}
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
                                     </DropdownMenu>

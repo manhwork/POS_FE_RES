@@ -1,21 +1,53 @@
 [
   {
-    "id": "order-1763285030364",
-    "tableId": "table-2",
-    "tableName": "Bàn 2",
-    "guestCount": 1,
+    "id": "order-1763291888698",
+    "tableId": "table-1",
+    "tableName": "Bàn 1",
+    "guestCount": 2,
     "items": [
       {
-        "id": "banh-mi",
-        "name": "Bánh Mì Thịt Nướng",
+        "id": "pho-bo",
+        "name": "Phở Bò",
+        "price": 65000,
+        "quantity": 1
+      },
+      {
+        "id": "bun-bo-hue",
+        "name": "Bún Bò Huế ",
+        "price": 60000,
+        "quantity": 1
+      },
+      {
+        "id": "ca-phe-sua",
+        "name": "Cà Phê Sữa",
         "price": 25000,
-        "quantity": 2
+        "quantity": 1
       }
     ],
-    "subtotal": 50000,
-    "tax": 5000,
-    "total": 55000,
+    "subtotal": 150000,
+    "tax": 15000,
+    "total": 165000,
+    "status": "completed",
+    "startTime": "2025-11-16T11:18:21.350Z",
+    "endTime": "2025-11-16T14:27:36.338Z"
+  },
+  {
+    "id": "order-1763291888698",
+    "tableId": "table-1",
+    "tableName": "Bàn 1",
+    "guestCount": 0,
+    "items": [
+      {
+        "id": "pho-bo",
+        "name": "Phở Bò",
+        "price": 65000,
+        "quantity": 1
+      }
+    ],
+    "subtotal": 65000,
+    "tax": 6500,
+    "total": 71500,
     "status": "pending",
-    "startTime": "2025-11-16T09:23:53.509Z"
+    "startTime": "2025-11-16T14:26:55.241Z"
   }
 ]

@@ -21,6 +21,7 @@ import {
   ArrowRight,
 } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { formatCurrency } from "@/lib/data"
 
 // Sample dashboard data
 const dashboardStats = {
@@ -41,23 +42,23 @@ const salesData = [
 ]
 
 const recentActivities = [
-  { id: 1, type: "sale", description: "New order #ORD-156 - $45.50", time: "2 minutes ago", icon: ShoppingCart },
-  { id: 2, type: "customer", description: "New customer registered: John Smith", time: "15 minutes ago", icon: Users },
+  { id: 1, type: "sale", description: `Đơn hàng mới #ORD-156 - ${formatCurrency(45.50)}`, time: "2 phút trước", icon: ShoppingCart },
+  { id: 2, type: "customer", description: "Khách hàng mới đăng ký: John Smith", time: "15 phút trước", icon: Users },
   {
     id: 3,
     type: "inventory",
-    description: "Low stock alert: Premium Coffee (5 units left)",
-    time: "1 hour ago",
+    description: "Cảnh báo sắp hết hàng: Cà phê Premium (còn 5 sản phẩm)",
+    time: "1 giờ trước",
     icon: AlertTriangle,
   },
-  { id: 4, type: "sale", description: "Order #ORD-155 completed - $78.25", time: "2 hours ago", icon: ShoppingCart },
-  { id: 5, type: "product", description: "New product added: Chocolate Croissant", time: "3 hours ago", icon: Package },
+  { id: 4, type: "sale", description: `Đơn hàng #ORD-155 đã hoàn thành - ${formatCurrency(78.25)}`, time: "2 giờ trước", icon: ShoppingCart },
+  { id: 5, type: "product", description: "Sản phẩm mới được thêm: Bánh sừng bò sô cô la", time: "3 giờ trước", icon: Package },
 ]
 
 const alerts = [
-  { id: 1, type: "warning", message: "5 products are running low on stock", action: "View Inventory" },
-  { id: 2, type: "info", message: "3 invoices are overdue", action: "View Invoices" },
-  { id: 3, type: "success", message: "Daily sales target achieved!", action: "View Reports" },
+  { id: 1, type: "warning", message: "5 sản phẩm sắp hết hàng", action: "Xem kho" },
+  { id: 2, type: "info", message: "3 hóa đơn quá hạn", action: "Xem hóa đơn" },
+  { id: 3, type: "success", message: "Đã đạt mục tiêu doanh số ngày!", action: "Xem báo cáo" },
 ]
 
 export default function HomePage() {
@@ -124,7 +125,7 @@ export default function HomePage() {
             <p className="text-muted-foreground">{t("dashboard.welcome", { name: user.name })}</p>
           </div>
           <div className="text-sm text-muted-foreground">
-            {new Date().toLocaleDateString("en-US", {
+            {new Date().toLocaleDateString("vi-VN", {
               weekday: "long",
               year: "numeric",
               month: "long",
@@ -141,7 +142,7 @@ export default function HomePage() {
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${dashboardStats.todaySales.value.toLocaleString()}</div>
+              <div className="text-2xl font-bold">{formatCurrency(dashboardStats.todaySales.value)}</div>
               <div className="flex items-center text-xs text-muted-foreground">
                 {dashboardStats.todaySales.trend === "up" ? (
                   <TrendingUp className="h-3 w-3 text-green-500 mr-1" />
@@ -287,7 +288,7 @@ export default function HomePage() {
                           alert.type === "warning" ? "destructive" : alert.type === "info" ? "default" : "secondary"
                         }
                       >
-                        {alert.type}
+                        {t(`common.${alert.type}`)}
                       </Badge>
                       <span className="text-sm">{alert.message}</span>
                     </div>

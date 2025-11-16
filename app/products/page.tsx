@@ -9,8 +9,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Product, Category } from "@/lib/data";
+import { useTranslation } from "react-i18next";
 
 export default function ProductsPage() {
+    const { t } = useTranslation();
     const [menuData, setMenuData] = useState<{
         products: Product[];
         categories: Category[];
@@ -22,23 +24,26 @@ export default function ProductsPage() {
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const { toast } = useToast();
 
-    const fetchMenu = useCallback(async () => {
-        setIsLoading(true);
-        try {
-            const res = await fetch("/api/menu");
-            const data = await res.json();
-            setMenuData(data);
-        } catch (error) {
-            console.error("Failed to fetch menu", error);
-            toast({
-                title: "Error",
-                description: "Could not fetch product data.",
-                variant: "destructive",
-            });
-        } finally {
-            setIsLoading(false);
-        }
-    }, [toast]);
+    const fetchMenu = useCallback(
+        async () => {
+            setIsLoading(true);
+            try {
+                const res = await fetch("/api/menu");
+                const data = await res.json();
+                setMenuData(data);
+            } catch (error) {
+                console.error("Failed to fetch menu", error);
+                toast({
+                    title: t("messages.error"),
+                    description: t("errors.fetchMenu"),
+                    variant: "destructive",
+                });
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        [t, toast]
+    );
 
     useEffect(() => {
         fetchMenu();
@@ -56,13 +61,13 @@ export default function ProductsPage() {
             } catch (error) {
                 console.error("Failed to save menu", error);
                 toast({
-                    title: "Error",
-                    description: "Could not save product changes.",
+                    title: t("messages.error"),
+                    description: t("errors.saveMenu"),
                     variant: "destructive",
                 });
             }
         },
-        [toast]
+        [t, toast]
     );
 
     const handleAddProduct = () => {
@@ -87,8 +92,8 @@ export default function ProductsPage() {
                     : p
             );
             toast({
-                title: "Product updated",
-                description: `${productData.name} has been updated successfully.`,
+                title: t("products.productUpdated"),
+                description: `${productData.name} ${t("messages.success")}`,
             });
         } else {
             // Add new product
@@ -98,8 +103,8 @@ export default function ProductsPage() {
             };
             updatedProducts = [newProduct, ...menuData.products];
             toast({
-                title: "Product added",
-                description: `${productData.name} has been added successfully.`,
+                title: t("products.productAdded"),
+                description: `${productData.name} ${t("messages.success")}`,
             });
         }
 
@@ -120,8 +125,8 @@ export default function ProductsPage() {
         await persistMenu(updatedMenu);
 
         toast({
-            title: "Product deleted",
-            description: `${product.name} has been deleted.`,
+            title: t("products.productDeleted"),
+            description: `${product.name} ${t("messages.success")}`,
             variant: "destructive",
         });
     };
@@ -141,21 +146,21 @@ export default function ProductsPage() {
             <div className="p-6 space-y-6">
                 <div className="flex justify-between items-center">
                     <div>
-                        <h1 className="text-2xl font-bold">Products</h1>
+                        <h1 className="text-2xl font-bold">{t("products.title")}</h1>
                         <p className="text-muted-foreground">
-                            Manage your product catalog
+                            {t("products.description")}
                         </p>
                     </div>
                     <Button onClick={handleAddProduct}>
                         <Plus className="h-4 w-4 mr-2" />
-                        Add Product
+                        {t("products.addProduct")}
                     </Button>
                 </div>
 
                 <Card>
                     <CardHeader>
                         <CardTitle>
-                            Products ({menuData.products.length})
+                            {t("products.title")} ({menuData.products.length})
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -178,3 +183,5 @@ export default function ProductsPage() {
         </DashboardLayout>
     );
 }
+
+

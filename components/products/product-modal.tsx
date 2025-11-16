@@ -21,6 +21,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Product, Category } from "@/lib/data";
+import { useTranslation } from "react-i18next";
 
 interface ProductModalProps {
     isOpen: boolean;
@@ -58,6 +59,7 @@ export function ProductModal({
     product,
     categories,
 }: ProductModalProps) {
+    const { t } = useTranslation();
     const [formData, setFormData] =
         useState<Omit<Product, "id">>(initialFormData);
 
@@ -84,7 +86,7 @@ export function ProductModal({
             <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
                     <DialogTitle>
-                        {product ? "Edit Product" : "Add New Product"}
+                        {product ? t("products.editProduct") : t("products.addNewProduct")}
                     </DialogTitle>
                 </DialogHeader>
                 <form
@@ -92,7 +94,7 @@ export function ProductModal({
                     className="space-y-4 max-h-[80vh] overflow-y-auto p-2"
                 >
                     <div className="space-y-2">
-                        <Label htmlFor="name">Product Name</Label>
+                        <Label htmlFor="name">{t("products.productName")}</Label>
                         <Input
                             id="name"
                             value={formData.name}
@@ -104,7 +106,7 @@ export function ProductModal({
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="description">Description</Label>
+                        <Label htmlFor="description">{t("common.description")}</Label>
                         <Textarea
                             id="description"
                             value={formData.description}
@@ -116,7 +118,7 @@ export function ProductModal({
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="price">Price</Label>
+                            <Label htmlFor="price">{t("products.price")}</Label>
                             <Input
                                 id="price"
                                 type="number"
@@ -131,7 +133,7 @@ export function ProductModal({
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="category">Category</Label>
+                            <Label htmlFor="category">{t("products.category")}</Label>
                             <Select
                                 value={formData.categoryId}
                                 onValueChange={(value) =>
@@ -139,7 +141,7 @@ export function ProductModal({
                                 }
                             >
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Select category" />
+                                    <SelectValue placeholder={t("products.selectCategory")} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {categories.map((category) => (
@@ -156,7 +158,7 @@ export function ProductModal({
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="image">Image URL</Label>
+                        <Label htmlFor="image">{t("products.imageURL")}</Label>
                         <Input
                             id="image"
                             value={formData.image}
@@ -174,7 +176,7 @@ export function ProductModal({
                                 handleValueChange("isAvailable", checked)
                             }
                         />
-                        <Label htmlFor="isAvailable">Available for sale</Label>
+                        <Label htmlFor="isAvailable">{t("products.availableForSale")}</Label>
                     </div>
 
                     <div className="flex justify-end gap-2 pt-4">
@@ -183,10 +185,10 @@ export function ProductModal({
                             variant="outline"
                             onClick={onClose}
                         >
-                            Cancel
+                            {t("common.cancel")}
                         </Button>
                         <Button type="submit">
-                            {product ? "Update Product" : "Add Product"}
+                            {product ? t("products.updateProduct") : t("products.addProduct")}
                         </Button>
                     </div>
                 </form>
