@@ -46,10 +46,24 @@ export async function POST(request: Request) {
         const newOrderData = await request.json();
         const orders = await readOrders();
 
+        // Check if order ID already exists
+        if (newOrderData.id && orders.find((o) => o.id === newOrderData.id)) {
+            return NextResponse.json(
+                { message: "Order with this ID already exists." },
+                { status: 400 }
+            );
+        }
+
+        // Generate unique ID if not provided
+        const orderId =
+            newOrderData.id ||
+            `order-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
         const newOrder: Order = {
             ...newOrderData,
+            id: orderId,
             status: "pending", // Always start as pending
-            startTime: new Date().toISOString(),
+            startTime: newOrderData.startTime || new Date().toISOString(),
         };
 
         orders.push(newOrder);
@@ -73,11 +87,17 @@ export async function POST(request: Request) {
  */
 export async function PATCH(request: Request) {
     try {
-        const { id, status, paymentMethod, total, appliedPromotionId } =
-            await request.json();
-        if (!id || !status) {
+        const {
+            id,
+            status,
+            paymentMethod,
+            total,
+            appliedPromotionId,
+            invoiceId,
+        } = await request.json();
+        if (!id) {
             return NextResponse.json(
-                { message: "Missing order ID or status." },
+                { message: "Missing order ID." },
                 { status: 400 }
             );
         }
@@ -92,18 +112,27 @@ export async function PATCH(request: Request) {
             );
         }
 
-        orders[orderIndex].status = status;
-        if (status === "completed") {
-            orders[orderIndex].endTime = new Date().toISOString();
-            if (paymentMethod) {
-                orders[orderIndex].paymentMethod = paymentMethod;
+        // Update status if provided
+        if (status !== undefined) {
+            orders[orderIndex].status = status;
+            if (status === "completed") {
+                orders[orderIndex].endTime = new Date().toISOString();
             }
-            if (total !== undefined) {
-                orders[orderIndex].total = total;
-            }
-            if (appliedPromotionId) {
-                orders[orderIndex].appliedPromotionId = appliedPromotionId;
-            }
+        }
+
+        // Update payment method and promotion for any status if provided
+        if (paymentMethod !== undefined) {
+            orders[orderIndex].paymentMethod = paymentMethod;
+        }
+        if (total !== undefined) {
+            orders[orderIndex].total = total;
+        }
+        if (appliedPromotionId !== undefined) {
+            orders[orderIndex].appliedPromotionId = appliedPromotionId;
+        }
+        // Allow updating invoiceId (link order to invoice)
+        if (invoiceId !== undefined) {
+            orders[orderIndex].invoiceId = invoiceId;
         }
 
         await writeOrders(orders);

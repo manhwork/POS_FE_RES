@@ -94,7 +94,9 @@ export function InvoiceTable({
                             </TableCell>
                             <TableCell>{invoice.issueDate}</TableCell>
                             <TableCell>{invoice.dueDate}</TableCell>
-                            <TableCell>${invoice.amount.toFixed(2)}</TableCell>
+                            <TableCell className="font-medium">
+                                {invoice.amount.toLocaleString("vi-VN")}đ
+                            </TableCell>
                             <TableCell>
                                 <Badge className={statusColors[invoice.status]}>
                                     {invoice.status.charAt(0).toUpperCase() +
@@ -129,12 +131,14 @@ export function InvoiceTable({
                                                     Thanh toán
                                                 </DropdownMenuItem>
                                             )}
-                                        <DropdownMenuItem
-                                            onClick={() => onEdit(invoice)}
-                                        >
-                                            <Edit className="mr-2 h-4 w-4" />
-                                            Edit
-                                        </DropdownMenuItem>
+                                        {invoice.status !== "paid" && (
+                                            <DropdownMenuItem
+                                                onClick={() => onEdit(invoice)}
+                                            >
+                                                <Edit className="mr-2 h-4 w-4" />
+                                                Edit
+                                            </DropdownMenuItem>
+                                        )}
                                         <DropdownMenuItem
                                             onClick={() =>
                                                 handleDownload(invoice)
@@ -143,15 +147,17 @@ export function InvoiceTable({
                                             <Download className="mr-2 h-4 w-4" />
                                             Download PDF
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            onClick={() =>
-                                                handleDelete(invoice.id)
-                                            }
-                                            className="text-red-600"
-                                        >
-                                            <Trash2 className="mr-2 h-4 w-4" />
-                                            Delete
-                                        </DropdownMenuItem>
+                                        {invoice.status !== "paid" && (
+                                            <DropdownMenuItem
+                                                onClick={() =>
+                                                    handleDelete(invoice.id)
+                                                }
+                                                className="text-red-600"
+                                            >
+                                                <Trash2 className="mr-2 h-4 w-4" />
+                                                Delete
+                                            </DropdownMenuItem>
+                                        )}
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </TableCell>

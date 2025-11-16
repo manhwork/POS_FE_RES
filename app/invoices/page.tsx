@@ -172,8 +172,11 @@ export default function InvoicesPage() {
 
             if (!response.ok) throw new Error("Failed to complete payment");
 
-            // Get invoice to find linked orders
-            const invoice = invoices.find((inv) => inv.id === invoiceId);
+            // Fetch updated invoice from server to get latest data
+            const invoiceResponse = await fetch(`/api/invoices`);
+            const allInvoices: Invoice[] = await invoiceResponse.json();
+            const invoice = allInvoices.find((inv) => inv.id === invoiceId);
+
             if (invoice && invoice.orderIds.length > 0) {
                 // Deduct inventory for all orders in the invoice
                 const ordersToUpdate = allOrders.filter((order) =>
@@ -214,25 +217,50 @@ export default function InvoicesPage() {
                     )
                 );
 
-                // Update table status to available
+                // Update table status to available for all affected tables
                 if (ordersToUpdate.length > 0) {
-                    const tableId = ordersToUpdate[0].tableId;
+                    // Get unique table IDs
+                    const uniqueTableIds = Array.from(
+                        new Set(ordersToUpdate.map((order) => order.tableId))
+                    );
+
                     // Fetch tables to update status
                     const tablesRes = await fetch("/api/tables");
                     const tablesData = await tablesRes.json();
+
+                    // Fetch fresh orders data to check remaining unpaid orders
+                    const ordersRes = await fetch("/api/orders");
+                    const freshOrders: Order[] = await ordersRes.json();
+
+                    // Update all affected tables
                     const updatedTables = {
                         ...tablesData,
                         tables: tablesData.tables.map((table: any) => {
-                            if (table.id === tableId) {
-                                return {
-                                    ...table,
-                                    status: "available",
-                                    currentOrder: undefined,
-                                };
+                            if (uniqueTableIds.includes(table.id)) {
+                                // Check if there are any remaining unpaid orders for this table
+                                const remainingUnpaidOrders =
+                                    freshOrders.filter(
+                                        (order) =>
+                                            order.tableId === table.id &&
+                                            !order.invoiceId &&
+                                            order.status !== "completed"
+                                    );
+
+                                if (remainingUnpaidOrders.length === 0) {
+                                    // No more unpaid orders, set table to available
+                                    return {
+                                        ...table,
+                                        status: "available",
+                                        currentOrder: undefined,
+                                    };
+                                }
+                                // Still has unpaid orders, keep occupied
+                                return table;
                             }
                             return table;
                         }),
                     };
+
                     await fetch("/api/tables", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },

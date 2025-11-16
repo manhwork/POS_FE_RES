@@ -21,5 +21,52 @@
     ],
     "id": "INV-1763286769499",
     "generatedAt": "2025-11-16T09:52:49.499Z"
+  },
+  {
+    "invoiceNumber": "INV-485557",
+    "orderIds": [
+      "order-1763290024045",
+      "order-1763290024045"
+    ],
+    "customerName": "Bàn 1",
+    "customerPhone": "0343200000",
+    "issueDate": "2025-11-16",
+    "dueDate": "2025-12-16",
+    "amount": 265500,
+    "status": "paid",
+    "items": [
+      {
+        "id": "bun-bo-hue",
+        "name": "Bún Bò Huế ",
+        "quantity": 1,
+        "unitPrice": 60000,
+        "total": 60000
+      },
+      {
+        "id": "com-tam",
+        "name": "Cơm Tấm",
+        "quantity": 2,
+        "unitPrice": 55000,
+        "total": 110000
+      },
+      {
+        "id": "nem-ran",
+        "name": "Nem Rán",
+        "quantity": 1,
+        "unitPrice": 40000,
+        "total": 40000
+      },
+      {
+        "id": "com-ga",
+        "name": "Cơm Gà Hấp",
+        "quantity": 1,
+        "unitPrice": 85000,
+        "total": 85000
+      }
+    ],
+    "paymentMethod": "cash",
+    "appliedPromotionId": "PROMO-10-PERCENT",
+    "id": "INV-1763290507598",
+    "generatedAt": "2025-11-16T10:55:07.598Z"
   }
 ]

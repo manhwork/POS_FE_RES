@@ -46,9 +46,34 @@ export async function POST(request: Request) {
         const newInvoiceData = await request.json();
         const invoices = await readInvoices();
 
+        // Check if invoice number already exists
+        if (
+            newInvoiceData.invoiceNumber &&
+            invoices.find(
+                (inv) => inv.invoiceNumber === newInvoiceData.invoiceNumber
+            )
+        ) {
+            return NextResponse.json(
+                { message: "Invoice number already exists." },
+                { status: 400 }
+            );
+        }
+
+        // Validate that orderIds exist if provided
+        if (newInvoiceData.orderIds && newInvoiceData.orderIds.length > 0) {
+            // Note: In a real app, you would validate against orders database
+            // For now, we just ensure it's an array
+            if (!Array.isArray(newInvoiceData.orderIds)) {
+                return NextResponse.json(
+                    { message: "orderIds must be an array." },
+                    { status: 400 }
+                );
+            }
+        }
+
         const newInvoice: Invoice = {
             ...newInvoiceData,
-            id: `INV-${Date.now()}`,
+            id: newInvoiceData.id || `INV-${Date.now()}`,
             generatedAt: new Date().toISOString(),
         };
 
@@ -82,6 +107,34 @@ export async function PUT(request: Request) {
                 { status: 404 }
             );
         }
+
+        // Check if invoice number is being changed and already exists
+        if (
+            updatedInvoice.invoiceNumber &&
+            updatedInvoice.invoiceNumber !== invoices[index].invoiceNumber &&
+            invoices.find(
+                (inv) =>
+                    inv.id !== updatedInvoice.id &&
+                    inv.invoiceNumber === updatedInvoice.invoiceNumber
+            )
+        ) {
+            return NextResponse.json(
+                { message: "Invoice number already exists." },
+                { status: 400 }
+            );
+        }
+
+        // Prevent updating paid invoices (they are immutable after payment)
+        if (invoices[index].status === "paid") {
+            return NextResponse.json(
+                {
+                    message:
+                        "Cannot modify paid invoice. Paid invoices are immutable.",
+                },
+                { status: 400 }
+            );
+        }
+
         invoices[index] = updatedInvoice;
         await writeInvoices(invoices);
         return NextResponse.json({
@@ -125,8 +178,20 @@ export async function PATCH(request: Request) {
             invoices[invoiceIndex].status = status as Invoice["status"];
         }
 
-        // Store payment method if provided (we might need to extend Invoice interface)
-        // For now, we'll just update the status to paid
+        // Store payment method if provided
+        if (paymentMethod !== undefined) {
+            invoices[invoiceIndex].paymentMethod = paymentMethod;
+        }
+
+        // Update amount if finalTotal is provided (applied promotion discount)
+        if (finalTotal !== undefined) {
+            invoices[invoiceIndex].amount = finalTotal;
+        }
+
+        // Store applied promotion ID if provided
+        if (appliedPromotionId !== undefined) {
+            invoices[invoiceIndex].appliedPromotionId = appliedPromotionId;
+        }
 
         await writeInvoices(invoices);
 
@@ -156,14 +221,30 @@ export async function DELETE(request: Request) {
             );
         }
         let invoices = await readInvoices();
-        const initialLength = invoices.length;
-        invoices = invoices.filter((inv) => inv.id !== id);
-        if (invoices.length === initialLength) {
+        const invoiceToDelete = invoices.find((inv) => inv.id === id);
+
+        if (!invoiceToDelete) {
             return NextResponse.json(
                 { message: "Invoice not found." },
                 { status: 404 }
             );
         }
+
+        // Prevent deleting paid invoices
+        if (invoiceToDelete.status === "paid") {
+            return NextResponse.json(
+                { message: "Cannot delete paid invoice." },
+                { status: 400 }
+            );
+        }
+
+        // Remove invoiceId from linked orders when deleting
+        if (invoiceToDelete.orderIds && invoiceToDelete.orderIds.length > 0) {
+            // Note: In a real app, you would update orders database
+            // For now, we just delete the invoice
+        }
+
+        invoices = invoices.filter((inv) => inv.id !== id);
         await writeInvoices(invoices);
         return NextResponse.json({ message: "Invoice deleted successfully." });
     } catch (error: any) {

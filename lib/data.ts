@@ -137,6 +137,7 @@ export interface Invoice {
     items: InvoiceItem[];
     notes?: string;
     paymentMethod?: string; // Phương thức thanh toán
+    appliedPromotionId?: string; // Mã khuyến mãi đã áp dụng
     generatedAt: string;
 }
 

@@ -4,7 +4,7 @@
       "id": "table-1",
       "name": "Bàn 1",
       "capacity": 2,
-      "status": "reserved",
+      "status": "occupied",
       "position": {
         "x": 1,
         "y": 1
@@ -16,6 +16,12 @@
         "phone": "12313",
         "time": "2025-11-16T03:45:00.000Z",
         "note": ""
+      },
+      "currentOrder": {
+        "id": "order-1763290024045",
+        "startTime": "2025-11-16T10:47:04.045Z",
+        "totalAmount": 66000,
+        "itemCount": 1
       }
     },
     {

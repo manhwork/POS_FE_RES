@@ -17,5 +17,80 @@
     "total": 55000,
     "status": "pending",
     "startTime": "2025-11-16T09:23:53.509Z"
+  },
+  {
+    "id": "order-1763290024045",
+    "tableId": "table-1",
+    "tableName": "Bàn 1",
+    "guestCount": 1,
+    "items": [
+      {
+        "id": "bun-bo-hue",
+        "name": "Bún Bò Huế ",
+        "price": 60000,
+        "quantity": 1
+      },
+      {
+        "id": "com-tam",
+        "name": "Cơm Tấm",
+        "price": 55000,
+        "quantity": 2
+      }
+    ],
+    "subtotal": 170000,
+    "tax": 17000,
+    "total": 187000,
+    "status": "pending",
+    "startTime": "2025-11-16T10:47:07.538Z"
+  },
+  {
+    "id": "order-1763285030364",
+    "tableId": "table-2",
+    "tableName": "Bàn 2",
+    "guestCount": 0,
+    "items": [
+      {
+        "id": "com-tam",
+        "name": "Cơm Tấm",
+        "price": 55000,
+        "quantity": 2
+      },
+      {
+        "id": "bun-bo-hue",
+        "name": "Bún Bò Huế ",
+        "price": 60000,
+        "quantity": 2
+      }
+    ],
+    "subtotal": 230000,
+    "tax": 23000,
+    "total": 253000,
+    "status": "pending",
+    "startTime": "2025-11-16T10:47:30.383Z"
+  },
+  {
+    "id": "order-1763290024045",
+    "tableId": "table-1",
+    "tableName": "Bàn 1",
+    "guestCount": 0,
+    "items": [
+      {
+        "id": "nem-ran",
+        "name": "Nem Rán",
+        "price": 40000,
+        "quantity": 1
+      },
+      {
+        "id": "com-ga",
+        "name": "Cơm Gà Hấp",
+        "price": 85000,
+        "quantity": 1
+      }
+    ],
+    "subtotal": 125000,
+    "tax": 12500,
+    "total": 137500,
+    "status": "pending",
+    "startTime": "2025-11-16T10:47:38.995Z"
   }
 ]
