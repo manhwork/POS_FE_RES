@@ -314,7 +314,7 @@ export function TableGrid({
                                                 </span>
                                             </div>
 
-                                            <div className="text-sm">
+                                            {/* <div className="text-sm">
                                                 <div className="flex justify-between">
                                                     <span>Món:</span>
                                                     <span className="font-medium">
@@ -333,7 +333,7 @@ export function TableGrid({
                                                         )}
                                                     </span>
                                                 </div>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     )}
 
