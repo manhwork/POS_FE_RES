@@ -1,1 +1,21 @@
-[]
+[
+  {
+    "id": "order-1763285030364",
+    "tableId": "table-2",
+    "tableName": "Bàn 2",
+    "guestCount": 1,
+    "items": [
+      {
+        "id": "banh-mi",
+        "name": "Bánh Mì Thịt Nướng",
+        "price": 25000,
+        "quantity": 2
+      }
+    ],
+    "subtotal": 50000,
+    "tax": 5000,
+    "total": 55000,
+    "status": "pending",
+    "startTime": "2025-11-16T09:23:53.509Z"
+  }
+]

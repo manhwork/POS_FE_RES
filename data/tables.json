@@ -22,13 +22,19 @@
       "id": "table-2",
       "name": "Bàn 2",
       "capacity": 4,
-      "status": "available",
+      "status": "occupied",
       "position": {
         "x": 2,
         "y": 1
       },
       "zone": "indoor",
-      "description": "Bàn 4 người trung tâm"
+      "description": "Bàn 4 người trung tâm",
+      "currentOrder": {
+        "id": "order-1763285030364",
+        "startTime": "2025-11-16T09:23:50.364Z",
+        "totalAmount": 0,
+        "itemCount": 0
+      }
     },
     {
       "id": "table-3",

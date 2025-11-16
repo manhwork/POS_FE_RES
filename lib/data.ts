@@ -124,7 +124,7 @@ export interface InvoiceItem {
 
 export interface Invoice {
     id: string;
-    orderId: string; // Link to the Order
+    orderIds: string[]; // Link to one or more Orders
     invoiceNumber: string;
     customerName?: string;
     customerEmail?: string; // Made optional
@@ -288,6 +288,7 @@ export interface Order {
     total: number;
     paymentMethod?: string; // Optional until completed
     appliedPromotionId?: string;
+    invoiceId?: string; // Link to the Invoice
 }
 
 export interface InventoryItem {

@@ -174,15 +174,6 @@ export function OrderTable({
                                                     Mark as Completed
                                                 </DropdownMenuItem>
                                             )}
-                                            {(order.status === "pending" ||
-                                                order.status ===
-                                                    "processing") && (
-                                                <DropdownMenuItem
-                                                    onClick={() => onPay(order)}
-                                                >
-                                                    Pay
-                                                </DropdownMenuItem>
-                                            )}
                                         </DropdownMenuContent>
                                     </DropdownMenu>
                                 </TableCell>

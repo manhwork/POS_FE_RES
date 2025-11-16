@@ -98,6 +98,52 @@ export async function PUT(request: Request) {
 }
 
 /**
+ * Handles PATCH requests to update invoice status (for payment).
+ */
+export async function PATCH(request: Request) {
+    try {
+        const { id, status, paymentMethod, finalTotal, appliedPromotionId } =
+            await request.json();
+        if (!id) {
+            return NextResponse.json(
+                { message: "Invoice ID is required." },
+                { status: 400 }
+            );
+        }
+        const invoices = await readInvoices();
+        const invoiceIndex = invoices.findIndex((inv) => inv.id === id);
+
+        if (invoiceIndex === -1) {
+            return NextResponse.json(
+                { message: "Invoice not found." },
+                { status: 404 }
+            );
+        }
+
+        // Update invoice status
+        if (status) {
+            invoices[invoiceIndex].status = status as Invoice["status"];
+        }
+
+        // Store payment method if provided (we might need to extend Invoice interface)
+        // For now, we'll just update the status to paid
+
+        await writeInvoices(invoices);
+
+        return NextResponse.json({
+            message: "Invoice updated successfully.",
+            invoice: invoices[invoiceIndex],
+        });
+    } catch (error: any) {
+        console.error("Error updating invoice:", error);
+        return NextResponse.json(
+            { message: "Error updating invoice." },
+            { status: 500 }
+        );
+    }
+}
+
+/**
  * Handles DELETE requests to delete an invoice.
  */
 export async function DELETE(request: Request) {

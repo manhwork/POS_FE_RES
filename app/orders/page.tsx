@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { OrderTable } from "@/components/orders/order-table";
 import { OrderDetailsModal } from "@/components/orders/order-details-modal";
-import { PaymentModal } from "@/components/orders/payment-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
@@ -20,7 +19,6 @@ function OrdersContent() {
     const highlightId = searchParams.get("highlight");
 
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
     const fetchOrders = useCallback(async () => {
@@ -76,63 +74,6 @@ function OrdersContent() {
         }
     };
 
-    const handleOpenPaymentModal = (order: Order) => {
-        setSelectedOrder(order);
-        setIsPaymentModalOpen(true);
-    };
-
-    const handleConfirmPayment = async (
-        orderId: string,
-        paymentMethod: string,
-        finalTotal: number,
-        appliedPromotionId?: string
-    ) => {
-        try {
-            const response = await fetch("/api/orders", {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    id: orderId,
-                    status: "completed",
-                    paymentMethod,
-                    total: finalTotal,
-                    appliedPromotionId,
-                }),
-            });
-
-            if (!response.ok) throw new Error("Failed to complete payment");
-
-            // Deduct inventory
-            const order = orders.find((o) => o.id === orderId);
-            if (order) {
-                const inventoryUpdates = order.items.map((item) => ({
-                    id: item.id,
-                    change: -item.quantity,
-                }));
-                await fetch("/api/inventory", {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(inventoryUpdates),
-                });
-            }
-
-            toast({
-                title: "Success",
-                description: `Payment for order ${orderId.substring(
-                    0,
-                    7
-                )} confirmed.`,
-            });
-            fetchOrders();
-        } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to confirm payment.",
-                variant: "destructive",
-            });
-        }
-    };
-
     const handleViewOrder = (order: Order) => {
         setSelectedOrder(order);
         setIsDetailsModalOpen(true);
@@ -172,7 +113,7 @@ function OrdersContent() {
                         orders={filteredOrders.pending}
                         onUpdateStatus={handleUpdateStatus}
                         onViewOrder={handleViewOrder}
-                        onPay={handleOpenPaymentModal}
+                        onPay={() => {}}
                         highlightId={highlightId}
                     />
                 </TabsContent>
@@ -181,7 +122,7 @@ function OrdersContent() {
                         orders={filteredOrders.processing}
                         onUpdateStatus={handleUpdateStatus}
                         onViewOrder={handleViewOrder}
-                        onPay={handleOpenPaymentModal}
+                        onPay={() => {}}
                         highlightId={highlightId}
                     />
                 </TabsContent>
@@ -190,7 +131,7 @@ function OrdersContent() {
                         orders={filteredOrders.completed}
                         onUpdateStatus={handleUpdateStatus}
                         onViewOrder={handleViewOrder}
-                        onPay={handleOpenPaymentModal}
+                        onPay={() => {}}
                         highlightId={highlightId}
                     />
                 </TabsContent>
@@ -201,12 +142,6 @@ function OrdersContent() {
                 onClose={() => setIsDetailsModalOpen(false)}
                 order={selectedOrder}
                 onPrintReceipt={() => {}}
-            />
-            <PaymentModal
-                isOpen={isPaymentModalOpen}
-                onClose={() => setIsPaymentModalOpen(false)}
-                order={selectedOrder}
-                onConfirmPayment={handleConfirmPayment}
             />
         </div>
     );

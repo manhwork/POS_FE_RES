@@ -10,16 +10,19 @@ import { InvoiceModal } from "@/components/invoices/invoice-modal";
 import { InvoiceDetailsModal } from "@/components/invoices/invoice-details-modal";
 import { InvoiceFilters } from "@/components/invoices/invoice-filters";
 import { InvoiceStats } from "@/components/invoices/invoice-stats";
+import { PaymentModal } from "@/components/invoices/payment-modal";
 import { Invoice, Order } from "@/lib/data";
 
 export default function InvoicesPage() {
     const [invoices, setInvoices] = useState<Invoice[]>([]);
-    const [completedOrders, setCompletedOrders] = useState<Order[]>([]);
+    const [allOrders, setAllOrders] = useState<Order[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [editingInvoice, setEditingInvoice] = useState<Invoice | undefined>();
     const [viewingInvoice, setViewingInvoice] = useState<Invoice | null>(null);
+    const [payingInvoice, setPayingInvoice] = useState<Invoice | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
     const { toast } = useToast();
@@ -35,9 +38,7 @@ export default function InvoicesPage() {
             const ordersData: Order[] = await ordersRes.json();
 
             setInvoices(invoicesData);
-            setCompletedOrders(
-                ordersData.filter((order) => order.status === "completed")
-            );
+            setAllOrders(ordersData);
         } catch (error) {
             toast({
                 title: "Error",
@@ -144,6 +145,119 @@ export default function InvoicesPage() {
         setStatusFilter("all");
     };
 
+    const handleOpenPaymentModal = (invoice: Invoice) => {
+        setPayingInvoice(invoice);
+        setIsPaymentModalOpen(true);
+    };
+
+    const handleConfirmPayment = async (
+        invoiceId: string,
+        paymentMethod: string,
+        finalTotal: number,
+        appliedPromotionId?: string
+    ) => {
+        try {
+            // Update invoice status to paid
+            const response = await fetch("/api/invoices", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: invoiceId,
+                    status: "paid",
+                    paymentMethod,
+                    finalTotal,
+                    appliedPromotionId,
+                }),
+            });
+
+            if (!response.ok) throw new Error("Failed to complete payment");
+
+            // Get invoice to find linked orders
+            const invoice = invoices.find((inv) => inv.id === invoiceId);
+            if (invoice && invoice.orderIds.length > 0) {
+                // Deduct inventory for all orders in the invoice
+                const ordersToUpdate = allOrders.filter((order) =>
+                    invoice.orderIds.includes(order.id)
+                );
+
+                const inventoryUpdates: { id: string; change: number }[] = [];
+                ordersToUpdate.forEach((order) => {
+                    order.items.forEach((item) => {
+                        inventoryUpdates.push({
+                            id: item.id,
+                            change: -item.quantity,
+                        });
+                    });
+                });
+
+                if (inventoryUpdates.length > 0) {
+                    await fetch("/api/inventory", {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(inventoryUpdates),
+                    });
+                }
+
+                // Update all linked orders to completed and link to invoice
+                await Promise.all(
+                    invoice.orderIds.map((orderId) =>
+                        fetch("/api/orders", {
+                            method: "PATCH",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                id: orderId,
+                                status: "completed",
+                                invoiceId: invoiceId,
+                                paymentMethod,
+                            }),
+                        })
+                    )
+                );
+
+                // Update table status to available
+                if (ordersToUpdate.length > 0) {
+                    const tableId = ordersToUpdate[0].tableId;
+                    // Fetch tables to update status
+                    const tablesRes = await fetch("/api/tables");
+                    const tablesData = await tablesRes.json();
+                    const updatedTables = {
+                        ...tablesData,
+                        tables: tablesData.tables.map((table: any) => {
+                            if (table.id === tableId) {
+                                return {
+                                    ...table,
+                                    status: "available",
+                                    currentOrder: undefined,
+                                };
+                            }
+                            return table;
+                        }),
+                    };
+                    await fetch("/api/tables", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(updatedTables),
+                    });
+                }
+            }
+
+            toast({
+                title: "Success",
+                description: `Thanh toán cho hóa đơn ${invoiceId.substring(
+                    0,
+                    7
+                )} đã hoàn tất.`,
+            });
+            fetchInvoicesAndOrders();
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Không thể hoàn tất thanh toán.",
+                variant: "destructive",
+            });
+        }
+    };
+
     // Calculate stats
     const totalInvoices = invoices.length;
     const totalRevenue = invoices
@@ -205,6 +319,7 @@ export default function InvoicesPage() {
                     onEdit={handleEdit}
                     onView={handleView}
                     onDelete={handleDelete}
+                    onPay={handleOpenPaymentModal}
                 />
 
                 <InvoiceModal
@@ -215,7 +330,7 @@ export default function InvoicesPage() {
                     }}
                     onSave={handleSave}
                     invoice={editingInvoice}
-                    completedOrders={completedOrders}
+                    allOrders={allOrders}
                 />
 
                 <InvoiceDetailsModal
@@ -229,6 +344,20 @@ export default function InvoicesPage() {
                         setIsDetailsModalOpen(false);
                         handleEdit(invoice);
                     }}
+                    onPay={(invoice) => {
+                        setIsDetailsModalOpen(false);
+                        handleOpenPaymentModal(invoice);
+                    }}
+                />
+
+                <PaymentModal
+                    isOpen={isPaymentModalOpen}
+                    onClose={() => {
+                        setIsPaymentModalOpen(false);
+                        setPayingInvoice(null);
+                    }}
+                    invoice={payingInvoice}
+                    onConfirmPayment={handleConfirmPayment}
                 />
             </div>
         </DashboardLayout>

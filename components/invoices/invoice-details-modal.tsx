@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Download, Mail, Edit } from "lucide-react";
+import { Download, Mail, Edit, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 import { Invoice } from "@/lib/data";
 
@@ -18,6 +18,7 @@ interface InvoiceDetailsModalProps {
     onClose: () => void;
     invoice: Invoice | null;
     onEdit: (invoice: Invoice) => void;
+    onPay?: (invoice: Invoice) => void;
 }
 
 const statusColors = {
@@ -33,6 +34,7 @@ export function InvoiceDetailsModal({
     onClose,
     invoice,
     onEdit,
+    onPay,
 }: InvoiceDetailsModalProps) {
     if (!invoice) return null;
 
@@ -55,6 +57,18 @@ export function InvoiceDetailsModal({
                     <div className="flex items-center justify-between">
                         <DialogTitle>Invoice Details</DialogTitle>
                         <div className="flex gap-2">
+                            {invoice.status !== "paid" &&
+                                invoice.status !== "cancelled" &&
+                                onPay && (
+                                    <Button
+                                        variant="default"
+                                        size="sm"
+                                        onClick={() => onPay(invoice)}
+                                    >
+                                        <CreditCard className="h-4 w-4 mr-2" />
+                                        Thanh toán
+                                    </Button>
+                                )}
                             <Button
                                 variant="outline"
                                 size="sm"
